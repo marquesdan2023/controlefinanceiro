@@ -23,6 +23,22 @@
     --radius: 12px;
   }
 
+  :root.light {
+    --bg: #f0f2f8;
+    --surface: #ffffff;
+    --surface2: #e8eaf2;
+    --border: #d0d4e8;
+    --text: #1a1d2e;
+    --text-muted: #6b7299;
+    --green: #0fa878;
+    --green-dim: #d0f5eb;
+    --red: #d94f4f;
+    --red-dim: #fde8e8;
+    --blue: #3a6be0;
+    --yellow: #c49a00;
+    --radius: 12px;
+  }
+
   html { font-size: 18px; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: 'Rajdhani', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; font-size: 18px; }
@@ -183,7 +199,7 @@
   .toggle-parcelas input:checked ~ .toggle-track .toggle-thumb { left: 19px; }
   .parcelas-box { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 10px; display: none; }
   .parcelas-box.ativo { display: block; }
-  .parcelas-box select { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: 'Rajdhani', sans-serif; font-size: 0.85rem; padding: 8px 11px; outline: none; }
+  .parcelas-box select { width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; color: var(--text); font-family: 'Rajdhani', sans-serif; font-size: 0.85rem; padding: 8px 11px; outline: none; }
   .parcelas-box select:focus { border-color: var(--blue); }
   .parcelas-preview { font-size: 0.82rem; color: var(--blue); margin-top: 8px; min-height: 16px; }
 </style>
@@ -209,10 +225,13 @@
 
 <header>
   <h1>💰 Controle Financeiro</h1>
-  <div class="month-nav">
-    <button id="btn-prev">‹</button>
-    <span id="month-label"></span>
-    <button id="btn-next">›</button>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <div class="month-nav">
+      <button id="btn-prev">‹</button>
+      <span id="month-label"></span>
+      <button id="btn-next">›</button>
+    </div>
+    <button id="btn-tema" title="Alternar tema" onclick="window._toggleTema()" style="background:var(--surface2);border:1px solid var(--border);color:var(--text);border-radius:8px;padding:6px 12px;cursor:pointer;font-size:1.1rem;line-height:1;transition:background 0.15s;">🌙</button>
   </div>
 </header>
 
@@ -808,6 +827,23 @@ function formatarData(d) {
 
 window._del = deletar;
 window._togglePago = togglePago;
+
+// ── Tema claro/escuro ─────────────────────────────────────────────────────────
+window._toggleTema = function() {
+  const isLight = document.documentElement.classList.toggle('light');
+  document.getElementById('btn-tema').textContent = isLight ? '☀️' : '🌙';
+  localStorage.setItem('tema_financeiro', isLight ? 'light' : 'dark');
+};
+
+// Restaurar tema salvo
+(function() {
+  const saved = localStorage.getItem('tema_financeiro');
+  if (saved === 'light') {
+    document.documentElement.classList.add('light');
+    const btn = document.getElementById('btn-tema');
+    if (btn) btn.textContent = '☀️';
+  }
+})();
 
 let _editandoId = null;
 
