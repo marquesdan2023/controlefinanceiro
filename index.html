@@ -57,7 +57,6 @@
 
   main { max-width: 1060px; margin: 0 auto; padding: 24px 20px; }
 
-  /* Cards resumo */
   .summary-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin-bottom: 24px; }
   @media (max-width: 800px) { .summary-grid { grid-template-columns: 1fr 1fr; } }
   .summary-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; }
@@ -68,14 +67,12 @@
   .value.blue { color: var(--blue); }
   .value.yellow { color: var(--yellow); }
 
-  /* Layout duas colunas */
   .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
   @media (max-width: 720px) { .two-col { grid-template-columns: 1fr; } }
 
   .panel { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
   .panel h2 { font-family: 'Orbitron', sans-serif; font-size: 0.85rem; font-weight: 600; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
 
-  /* Formulário */
   .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
   .form-row.single { grid-template-columns: 1fr; }
   label { font-size: 0.85rem; color: var(--text-muted); display: block; margin-bottom: 4px; }
@@ -88,7 +85,6 @@
   .btn-entrada { background: var(--green); color: #0a1a14; }
   .btn-saida { background: var(--red); color: #fff; }
 
-  /* Listas */
   .tx-list { display: flex; flex-direction: column; gap: 7px; max-height: 380px; overflow-y: auto; }
 
   .tx-item { display: flex; align-items: center; gap: 10px; background: var(--surface2); border-radius: 8px; padding: 11px 14px; font-size: 0.92rem; }
@@ -133,7 +129,6 @@
   #fb-err { color: var(--red); font-size: 0.78rem; margin-top: 8px; min-height: 16px; }
   .loading { text-align: center; padding: 20px; color: var(--text-muted); font-size: 0.85rem; }
 
-  /* Calendário de vencimentos */
   .cal-section { margin-bottom: 28px; }
   .cal-section h2 { font-family: 'Orbitron', sans-serif; font-size: 0.95rem; font-weight: 600; margin-bottom: 14px; color: var(--text); }
   .cal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; }
@@ -156,7 +151,6 @@
   .cal-chip.saida-pend { background: rgba(245,200,66,0.12); color: var(--yellow); }
   .cal-empty { color: var(--text-muted); font-size: 0.82rem; padding: 16px 0; }
 
-  /* Modal de detalhe do dia */
   #modal-dia-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.65); display: flex; align-items: center; justify-content: center; z-index: 450; }
   #modal-dia-overlay.hidden { display: none; }
   #modal-dia-box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; width: min(440px, 95vw); max-height: 80vh; overflow-y: auto; }
@@ -260,7 +254,6 @@
     </div>
   </div>
 
-  <!-- Calendário de vencimentos -->
   <div class="cal-section">
     <h2>📅 Vencimentos do mês</h2>
     <div class="cal-grid" id="cal-grid"><div class="cal-empty">Nenhum lançamento este mês.</div></div>
@@ -268,7 +261,6 @@
 
   <div class="two-col">
 
-    <!-- ENTRADAS -->
     <div style="display:flex; flex-direction:column; gap:20px;">
       <div class="panel">
         <h2>⬆️ Registrar recebimento</h2>
@@ -285,7 +277,6 @@
           <input id="inp-e-dia" type="number" min="1" max="31" placeholder="Ex: 5"></div>
         </div>
 
-        <!-- Toggle parcelas entrada -->
         <label class="toggle-parcelas">
           <input type="checkbox" id="chk-parcelas-e" onchange="window._toggleParcelasEntradaUI()">
           <div class="toggle-track"><div class="toggle-thumb"></div></div>
@@ -315,7 +306,6 @@
       </div>
     </div>
 
-    <!-- SAÍDAS -->
     <div style="display:flex; flex-direction:column; gap:20px;">
       <div class="panel">
         <h2>⬇️ Registrar conta</h2>
@@ -332,7 +322,6 @@
           <input id="inp-s-dia" type="number" min="1" max="31" placeholder="Ex: 10"></div>
         </div>
 
-        <!-- Toggle parcelas -->
         <label class="toggle-parcelas">
           <input type="checkbox" id="chk-parcelas" onchange="window._toggleParcelasUI()">
           <div class="toggle-track"><div class="toggle-thumb"></div></div>
@@ -367,7 +356,6 @@
 </main>
 </div>
 
-<!-- Modal detalhe do dia -->
 <div id="modal-dia-overlay" class="hidden">
   <div id="modal-dia-box">
     <h3 id="modal-dia-titulo"></h3>
@@ -377,7 +365,6 @@
   </div>
 </div>
 
-<!-- Modal de edição -->
 <div id="modal-overlay" class="hidden">
   <div id="modal-box">
     <h3 id="modal-titulo">✏️ Editar lançamento</h3>
@@ -483,8 +470,6 @@ document.getElementById('btn-entrada').addEventListener('click', async () => {
   } catch(e) { showToast('❌ Erro: ' + e.message); }
 });
 
-// ── Parcelas UI ─────────────────────────────────────────────────────────────
-
 const MONTHS_OPTS = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho',
                      'Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 
@@ -567,8 +552,6 @@ function gerarDatasParceladas(ini, fim, dia) {
   return datas;
 }
 
-// ── Botão salvar saída ────────────────────────────────────────────────────────
-
 document.getElementById('btn-saida').addEventListener('click', async () => {
   const desc  = document.getElementById('inp-s-desc').value.trim();
   const valor = parseFloat(document.getElementById('inp-s-valor').value);
@@ -633,7 +616,7 @@ async function loadData() {
   const snap = await getDocs(q);
   transactions = [];
   snap.forEach(d => transactions.push({ id: d.id, ...d.data() }));
-  transactions.sort((a,b) => b.data.localeCompare(a.data));
+  transactions.sort((a,b) => a.data.localeCompare(b.data));
   renderAll();
 }
 
@@ -645,7 +628,6 @@ function renderAll() {
   const totalEntradasPend      = entradas.filter(t => !t.pago).reduce((s,t) => s+t.valor, 0);
   const totalSaidasPagas       = saidas.filter(t => t.pago).reduce((s,t) => s+t.valor, 0);
   const totalSaidasPend        = saidas.filter(t => !t.pago).reduce((s,t) => s+t.valor, 0);
-  // Saldo = recebido - contas já pagas
   const saldo = totalEntradasRecebidas - totalSaidasPagas;
 
   document.getElementById('total-entradas').textContent = fmt(totalEntradasRecebidas);
@@ -664,7 +646,8 @@ function renderAll() {
 
 function renderListaEntradas(list) {
   const el = document.getElementById('list-entradas');
-  list = [...list].sort((a,b) => b.data.localeCompare(a.data));
+  // ✅ CORRIGIDO: ordem crescente por data (dia menor primeiro)
+  list = [...list].sort((a,b) => a.data.localeCompare(b.data));
   if (list.length === 0) {
     el.innerHTML = '<div class="empty">Nenhum recebimento este mês.</div>';
     return;
@@ -689,7 +672,8 @@ function renderListaEntradas(list) {
 
 function renderListaSaidas(list) {
   const el = document.getElementById('list-saidas');
-  list = [...list].sort((a,b) => b.data.localeCompare(a.data));
+  // ✅ CORRIGIDO: ordem crescente por data (dia menor primeiro)
+  list = [...list].sort((a,b) => a.data.localeCompare(b.data));
   if (list.length === 0) {
     el.innerHTML = '<div class="empty">Nenhuma conta este mês.</div>';
     return;
@@ -719,10 +703,9 @@ function renderCalendario() {
     return;
   }
 
-  // Agrupar por dia
   const porDia = {};
   transactions.forEach(t => {
-    const dia = t.data.split('-')[2]; // "05"
+    const dia = t.data.split('-')[2];
     if (!porDia[dia]) porDia[dia] = [];
     porDia[dia].push(t);
   });
@@ -750,10 +733,6 @@ function renderCalendario() {
     const dataObj = new Date(currentYear, currentMonth - 1, parseInt(dia));
     const nomeDia = DIAS_SEMANA[dataObj.getDay()];
 
-    const totalDia = items.reduce((s,t) => {
-      if (t.tipo === 'entrada') return s + t.valor;
-      return s - t.valor;
-    }, 0);
     const totalEntDia  = items.filter(t => t.tipo === 'entrada').reduce((s,t) => s+t.valor, 0);
     const totalSaiDia  = items.filter(t => t.tipo === 'saida').reduce((s,t) => s+t.valor, 0);
     const qtd = items.length;
@@ -828,14 +807,12 @@ function formatarData(d) {
 window._del = deletar;
 window._togglePago = togglePago;
 
-// ── Tema claro/escuro ─────────────────────────────────────────────────────────
 window._toggleTema = function() {
   const isLight = document.documentElement.classList.toggle('light');
   document.getElementById('btn-tema').textContent = isLight ? '☀️' : '🌙';
   localStorage.setItem('tema_financeiro', isLight ? 'light' : 'dark');
 };
 
-// Restaurar tema salvo
 (function() {
   const saved = localStorage.getItem('tema_financeiro');
   if (saved === 'light') {
@@ -884,7 +861,6 @@ window._salvarEdicao = async function() {
   } catch(e) { showToast('❌ Erro ao salvar: ' + e.message); }
 };
 
-// Fechar modal clicando fora
 document.getElementById('modal-overlay').addEventListener('click', function(e) {
   if (e.target === this) window._fecharModal();
 });
@@ -920,7 +896,6 @@ function iniciarApp() {
   const hoje = new Date();
   currentYear = hoje.getFullYear();
   currentMonth = hoje.getMonth() + 1;
-  const dataHoje = hoje.toISOString().split('T')[0];
   popularSelects();
   updateMonthLabel();
   loadData();
