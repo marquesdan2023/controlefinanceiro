@@ -57,7 +57,7 @@
 
   main { max-width: 1060px; margin: 0 auto; padding: 24px 20px; }
 
-  .summary-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin-bottom: 24px; }
+  .summary-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin-bottom: 16px; }
   @media (max-width: 800px) { .summary-grid { grid-template-columns: 1fr 1fr; } }
   .summary-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; }
   .summary-card .label { font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 6px; }
@@ -66,6 +66,49 @@
   .value.red { color: var(--red); }
   .value.blue { color: var(--blue); }
   .value.yellow { color: var(--yellow); }
+
+  /* Caixa inicial */
+  .caixa-wrap {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 16px 20px;
+    margin-bottom: 16px; display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  }
+  .caixa-wrap label { font-size: 0.82rem; color: var(--text-muted); white-space: nowrap; margin: 0; }
+  .caixa-input-row { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 200px; }
+  .caixa-input-row input {
+    max-width: 160px; background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 8px; color: var(--text); font-family: 'Orbitron', sans-serif;
+    font-size: 1rem; padding: 8px 12px; outline: none; transition: border-color 0.15s;
+  }
+  .caixa-input-row input:focus { border-color: var(--green); }
+  .btn-caixa {
+    padding: 8px 16px; background: var(--green); color: #0a1a14;
+    border: none; border-radius: 8px; font-family: 'Rajdhani', sans-serif;
+    font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: opacity 0.15s;
+    white-space: nowrap;
+  }
+  .btn-caixa:hover { opacity: 0.88; }
+  .caixa-info { font-size: 0.78rem; color: var(--text-muted); margin-left: auto; }
+  .caixa-info span { color: var(--green); font-weight: 600; font-family: 'Orbitron', sans-serif; }
+
+  /* Progresso do mês */
+  .progresso-bar-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 20px; margin-bottom: 16px; }
+  .progresso-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+  .progresso-header span { font-size: 0.82rem; color: var(--text-muted); }
+  .progresso-header strong { font-size: 0.92rem; color: var(--text); }
+  .progresso-bar-bg { background: var(--surface2); border-radius: 99px; height: 10px; overflow: hidden; }
+  .progresso-bar-fill { height: 100%; border-radius: 99px; transition: width 0.4s ease; }
+  .progresso-info { display: flex; justify-content: space-between; margin-top: 8px; font-size: 0.78rem; color: var(--text-muted); }
+
+  /* Próximo vencimento */
+  .proximo-venc { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; padding: 10px 16px; margin-bottom: 24px; display: flex; align-items: center; gap: 10px; font-size: 0.88rem; }
+  .proximo-venc .pv-icon { font-size: 1.1rem; }
+  .proximo-venc .pv-label { color: var(--text-muted); }
+  .proximo-venc .pv-info { font-weight: 600; color: var(--text); }
+  .proximo-venc .pv-dias { margin-left: auto; font-family: 'Orbitron', sans-serif; font-size: 0.78rem; font-weight: 700; padding: 3px 10px; border-radius: 6px; }
+  .pv-dias.hoje { background: rgba(240,106,106,0.15); color: var(--red); }
+  .pv-dias.amanha { background: rgba(245,200,66,0.15); color: var(--yellow); }
+  .pv-dias.normal { background: rgba(91,140,255,0.15); color: var(--blue); }
 
   .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
   @media (max-width: 720px) { .two-col { grid-template-columns: 1fr; } }
@@ -86,18 +129,12 @@
   .btn-saida { background: var(--red); color: #fff; }
 
   .tx-list { display: flex; flex-direction: column; gap: 7px; max-height: 380px; overflow-y: auto; }
-
   .tx-item { display: flex; align-items: center; gap: 10px; background: var(--surface2); border-radius: 8px; padding: 11px 14px; font-size: 0.92rem; }
-  .tx-item.pendente { opacity: 0.5; }
+  .tx-item.pendente { opacity: 0.55; }
+  .tx-item.vence-hoje { border-left: 3px solid var(--red) !important; opacity: 1 !important; }
+  .tx-item.vence-amanha { border-left: 3px solid var(--yellow) !important; opacity: 1 !important; }
 
-  .tx-check {
-    width: 24px; height: 24px; flex-shrink: 0;
-    border-radius: 50%; border: 2px solid var(--border);
-    background: none; cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 0.75rem; color: transparent;
-    transition: border-color 0.15s, background 0.15s;
-  }
+  .tx-check { width: 24px; height: 24px; flex-shrink: 0; border-radius: 50%; border: 2px solid var(--border); background: none; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; color: transparent; transition: border-color 0.15s, background 0.15s; }
   .tx-check:hover { border-color: var(--green); }
   .tx-check.pago { background: var(--green); border-color: var(--green); color: #0a1a14; }
 
@@ -112,6 +149,8 @@
 
   .tx-del { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.95rem; padding: 2px 5px; border-radius: 4px; line-height: 1; transition: color 0.15s, background 0.15s; }
   .tx-del:hover { color: var(--red); background: var(--red-dim); }
+  .tx-edit { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.85rem; padding: 2px 5px; border-radius: 4px; line-height: 1; transition: color 0.15s, background 0.15s; }
+  .tx-edit:hover { color: var(--blue); background: rgba(91,140,255,0.12); }
 
   .empty { text-align: center; color: var(--text-muted); font-size: 0.82rem; padding: 20px 0; }
 
@@ -132,16 +171,12 @@
   .cal-section { margin-bottom: 28px; }
   .cal-section h2 { font-family: 'Orbitron', sans-serif; font-size: 0.95rem; font-weight: 600; margin-bottom: 14px; color: var(--text); }
   .cal-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; }
-  .cal-day {
-    background: var(--surface); border: 1px solid var(--border);
-    border-radius: 10px; padding: 12px 14px;
-    cursor: pointer; transition: border-color 0.15s, transform 0.1s;
-    position: relative;
-  }
+  .cal-day { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; cursor: pointer; transition: border-color 0.15s, transform 0.1s; }
   .cal-day:hover { border-color: var(--blue); transform: translateY(-2px); }
   .cal-day.tem-pendente { border-left: 3px solid var(--yellow); }
   .cal-day.tudo-pago { border-left: 3px solid var(--green); }
   .cal-day.vencido { border-left: 3px solid var(--red); }
+  .cal-day.hoje { box-shadow: 0 0 0 2px var(--blue); }
   .cal-day-num { font-family: 'Orbitron', sans-serif; font-size: 1.1rem; font-weight: 700; color: var(--text); line-height: 1; }
   .cal-day-label { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 8px; }
   .cal-day-items { display: flex; flex-direction: column; gap: 3px; margin-top: 6px; }
@@ -167,9 +202,6 @@
   .dia-badge.entrada { background: rgba(45,212,160,0.15); color: var(--green); }
   #btn-fechar-dia { margin-top: 4px; width: 100%; padding: 9px; background: var(--surface2); border: 1px solid var(--border); color: var(--text-muted); border-radius: 8px; font-family: 'Rajdhani', sans-serif; font-size: 0.85rem; cursor: pointer; }
   #btn-fechar-dia:hover { background: var(--border); }
-
-  .tx-edit { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 0.85rem; padding: 2px 5px; border-radius: 4px; line-height: 1; transition: color 0.15s, background 0.15s; }
-  .tx-edit:hover { color: var(--blue); background: rgba(91,140,255,0.12); }
 
   #modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.65); display: flex; align-items: center; justify-content: center; z-index: 400; }
   #modal-overlay.hidden { display: none; }
@@ -197,28 +229,16 @@
   .parcelas-box select:focus { border-color: var(--blue); }
   .parcelas-preview { font-size: 0.82rem; color: var(--blue); margin-top: 8px; min-height: 16px; }
 
-  /* ✅ Campo de pesquisa */
-  .search-box {
-    position: relative; margin-bottom: 10px;
-  }
-  .search-box input {
-    padding-left: 34px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    color: var(--text);
-    font-family: 'Rajdhani', sans-serif;
-    font-size: 0.92rem;
-  }
+  .list-controls { display: flex; gap: 6px; margin-bottom: 8px; flex-wrap: wrap; }
+  .filter-btn { background: var(--surface2); border: 1px solid var(--border); color: var(--text-muted); border-radius: 6px; padding: 4px 10px; font-family: 'Rajdhani', sans-serif; font-size: 0.78rem; cursor: pointer; transition: all 0.15s; }
+  .filter-btn:hover { border-color: var(--blue); color: var(--text); }
+  .filter-btn.ativo { background: var(--blue); border-color: var(--blue); color: #fff; }
+
+  .search-box { position: relative; margin-bottom: 8px; }
+  .search-box input { padding-left: 34px; font-size: 0.92rem; }
   .search-box input:focus { border-color: var(--blue); }
-  .search-box .search-icon {
-    position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
-    font-size: 0.9rem; color: var(--text-muted); pointer-events: none;
-  }
-  .search-count {
-    font-size: 0.75rem; color: var(--text-muted);
-    text-align: right; margin-bottom: 6px; min-height: 14px;
-  }
+  .search-box .search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 0.9rem; color: var(--text-muted); pointer-events: none; }
+  .search-count { font-size: 0.75rem; color: var(--text-muted); text-align: right; margin-bottom: 6px; min-height: 14px; }
 </style>
 </head>
 <body>
@@ -256,12 +276,12 @@
 
   <div class="summary-grid">
     <div class="summary-card">
-      <div class="label">Total recebido</div>
-      <div class="value green" id="total-entradas">R$ 0,00</div>
+      <div class="label">Caixa inicial</div>
+      <div class="value green" id="total-caixa">R$ 0,00</div>
     </div>
     <div class="summary-card">
-      <div class="label">A receber</div>
-      <div class="value yellow" id="total-entradas-pend">R$ 0,00</div>
+      <div class="label">Total recebido</div>
+      <div class="value green" id="total-entradas">R$ 0,00</div>
     </div>
     <div class="summary-card">
       <div class="label">Contas pagas</div>
@@ -272,9 +292,42 @@
       <div class="value yellow" id="total-saidas-pendentes">R$ 0,00</div>
     </div>
     <div class="summary-card">
-      <div class="label">Saldo atual</div>
+      <div class="label">Saldo disponível</div>
       <div class="value blue" id="saldo">R$ 0,00</div>
     </div>
+  </div>
+
+  <!-- Caixa inicial -->
+  <div class="caixa-wrap">
+    <label>💵 Caixa inicial do mês:</label>
+    <div class="caixa-input-row">
+      <input type="number" id="inp-caixa" step="0.01" min="0" placeholder="0,00">
+      <button class="btn-caixa" onclick="window._salvarCaixa()">Salvar</button>
+    </div>
+    <div class="caixa-info">Saldo = Caixa + Recebidos − Pagas &nbsp;|&nbsp; Caixa atual: <span id="caixa-atual-label">R$ 0,00</span></div>
+  </div>
+
+  <!-- Barra de progresso -->
+  <div class="progresso-bar-wrap">
+    <div class="progresso-header">
+      <strong id="progresso-titulo">Contas pagas este mês</strong>
+      <span id="progresso-pct">0%</span>
+    </div>
+    <div class="progresso-bar-bg">
+      <div class="progresso-bar-fill" id="progresso-fill" style="width:0%;background:var(--green)"></div>
+    </div>
+    <div class="progresso-info">
+      <span id="progresso-left"></span>
+      <span id="progresso-right"></span>
+    </div>
+  </div>
+
+  <!-- Próximo vencimento -->
+  <div class="proximo-venc" id="proximo-venc" style="display:none">
+    <span class="pv-icon">⏰</span>
+    <span class="pv-label">Próximo vencimento:</span>
+    <span class="pv-info" id="pv-info"></span>
+    <span class="pv-dias" id="pv-dias"></span>
   </div>
 
   <div class="cal-section">
@@ -287,25 +340,17 @@
     <div style="display:flex; flex-direction:column; gap:20px;">
       <div class="panel">
         <h2>⬆️ Registrar recebimento</h2>
-        <div class="form-row single">
-          <div><label>Origem (de onde veio)</label>
-          <input id="inp-e-origem" type="text" placeholder="Ex: Salário, Freelance, Aluguel..."></div>
-        </div>
-        <div class="form-row single">
-          <div><label>Valor (R$)</label>
-          <input id="inp-e-valor" type="number" step="0.01" min="0" placeholder="0,00"></div>
-        </div>
-        <div class="form-row single">
-          <div><label>Dia do recebimento (dia do mês)</label>
-          <input id="inp-e-dia" type="number" min="1" max="31" placeholder="Ex: 5"></div>
-        </div>
-
+        <div class="form-row single"><div><label>Origem (de onde veio)</label>
+          <input id="inp-e-origem" type="text" placeholder="Ex: Salário, Freelance, Aluguel..."></div></div>
+        <div class="form-row single"><div><label>Valor (R$)</label>
+          <input id="inp-e-valor" type="number" step="0.01" min="0" placeholder="0,00"></div></div>
+        <div class="form-row single"><div><label>Dia do recebimento</label>
+          <input id="inp-e-dia" type="number" min="1" max="31" placeholder="Ex: 5"></div></div>
         <label class="toggle-parcelas">
           <input type="checkbox" id="chk-parcelas-e" onchange="window._toggleParcelasEntradaUI()">
           <div class="toggle-track"><div class="toggle-thumb"></div></div>
           Lançar em parcelas (vários meses de uma vez)
         </label>
-
         <div class="parcelas-box" id="parcelas-box-e">
           <div class="form-row">
             <div><label>Mês inicial</label><select id="inp-e-mes-ini" onchange="window._atualizarPreviewEntrada()"></select></div>
@@ -313,16 +358,19 @@
           </div>
           <div class="parcelas-preview" id="parcelas-preview-e"></div>
         </div>
-
         <button class="btn btn-entrada" id="btn-entrada">+ Registrar recebimento</button>
       </div>
-
       <div class="panel">
         <h2>⬆️ Recebimentos do mês</h2>
-        <!-- ✅ Campo de pesquisa - Entradas -->
         <div class="search-box">
           <span class="search-icon">🔍</span>
-          <input type="text" id="search-entradas" placeholder="Pesquisar recebimento..." oninput="window._filtrarEntradas()">
+          <input type="text" id="search-entradas" placeholder="Pesquisar recebimento..." oninput="window._aplicarFiltrosEntradas()">
+        </div>
+        <div class="list-controls">
+          <button class="filter-btn ativo" id="fe-todos" onclick="window._setFiltroEntrada('todos')">Todos</button>
+          <button class="filter-btn" id="fe-recebido" onclick="window._setFiltroEntrada('recebido')">✓ Recebidos</button>
+          <button class="filter-btn" id="fe-pendente" onclick="window._setFiltroEntrada('pendente')">⏳ Aguardando</button>
+          <button class="filter-btn" id="fe-valor" onclick="window._setOrdemEntrada()">↕ Valor</button>
         </div>
         <div class="search-count" id="count-entradas"></div>
         <div class="tx-list" id="list-entradas"><div class="loading">Carregando...</div></div>
@@ -332,25 +380,17 @@
     <div style="display:flex; flex-direction:column; gap:20px;">
       <div class="panel">
         <h2>⬇️ Registrar conta</h2>
-        <div class="form-row single">
-          <div><label>Descrição da conta</label>
-          <input id="inp-s-desc" type="text" placeholder="Ex: Aluguel, Luz, Internet..."></div>
-        </div>
-        <div class="form-row single">
-          <div><label>Valor (R$)</label>
-          <input id="inp-s-valor" type="number" step="0.01" min="0" placeholder="0,00"></div>
-        </div>
-        <div class="form-row single">
-          <div><label>Dia de vencimento (dia do mês)</label>
-          <input id="inp-s-dia" type="number" min="1" max="31" placeholder="Ex: 10"></div>
-        </div>
-
+        <div class="form-row single"><div><label>Descrição da conta</label>
+          <input id="inp-s-desc" type="text" placeholder="Ex: Aluguel, Luz, Internet..."></div></div>
+        <div class="form-row single"><div><label>Valor (R$)</label>
+          <input id="inp-s-valor" type="number" step="0.01" min="0" placeholder="0,00"></div></div>
+        <div class="form-row single"><div><label>Dia de vencimento</label>
+          <input id="inp-s-dia" type="number" min="1" max="31" placeholder="Ex: 10"></div></div>
         <label class="toggle-parcelas">
           <input type="checkbox" id="chk-parcelas" onchange="window._toggleParcelasUI()">
           <div class="toggle-track"><div class="toggle-thumb"></div></div>
           Lançar em parcelas (vários meses de uma vez)
         </label>
-
         <div class="parcelas-box" id="parcelas-box">
           <div class="form-row">
             <div><label>Mês inicial</label><select id="inp-s-mes-ini"></select></div>
@@ -358,16 +398,19 @@
           </div>
           <div class="parcelas-preview" id="parcelas-preview"></div>
         </div>
-
         <button class="btn btn-saida" id="btn-saida">− Adicionar conta</button>
       </div>
-
       <div class="panel">
         <h2>⬇️ Contas do mês</h2>
-        <!-- ✅ Campo de pesquisa - Saídas -->
         <div class="search-box">
           <span class="search-icon">🔍</span>
-          <input type="text" id="search-saidas" placeholder="Pesquisar conta..." oninput="window._filtrarSaidas()">
+          <input type="text" id="search-saidas" placeholder="Pesquisar conta..." oninput="window._aplicarFiltrosSaidas()">
+        </div>
+        <div class="list-controls">
+          <button class="filter-btn ativo" id="fs-todos" onclick="window._setFiltroSaida('todos')">Todos</button>
+          <button class="filter-btn" id="fs-pago" onclick="window._setFiltroSaida('pago')">✓ Pagas</button>
+          <button class="filter-btn" id="fs-pendente" onclick="window._setFiltroSaida('pendente')">⏳ Pendentes</button>
+          <button class="filter-btn" id="fs-valor" onclick="window._setOrdemSaida()">↕ Valor</button>
         </div>
         <div class="search-count" id="count-saidas"></div>
         <div class="tx-list" id="list-saidas"><div class="loading">Carregando...</div></div>
@@ -375,7 +418,6 @@
     </div>
 
   </div>
-
 </main>
 </div>
 
@@ -391,12 +433,9 @@
 <div id="modal-overlay" class="hidden">
   <div id="modal-box">
     <h3 id="modal-titulo">✏️ Editar lançamento</h3>
-    <label>Descrição</label>
-    <input id="modal-desc" type="text">
-    <label>Valor (R$)</label>
-    <input id="modal-valor" type="number" step="0.01" min="0">
-    <label id="modal-data-label">Data</label>
-    <input id="modal-data" type="date">
+    <label>Descrição</label><input id="modal-desc" type="text">
+    <label>Valor (R$)</label><input id="modal-valor" type="number" step="0.01" min="0">
+    <label id="modal-data-label">Data</label><input id="modal-data" type="date">
     <label id="modal-data-pgto-label">Data de pagamento <span style="color:var(--text-muted);font-weight:400">(opcional)</span></label>
     <input id="modal-data-pgto" type="date">
     <div class="modal-btns">
@@ -410,24 +449,24 @@
 
 <script type="module">
 import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js';
-import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, query, where, updateDoc }
+import { getFirestore, collection, addDoc, getDocs, deleteDoc, doc, query, where, updateDoc, setDoc, getDoc }
   from 'https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js';
 
 function fmt(v) {
   return 'R$ ' + Math.abs(v).toLocaleString('pt-BR', { minimumFractionDigits:2, maximumFractionDigits:2 });
 }
-
 function showToast(msg) {
   const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
+  t.textContent = msg; t.classList.add('show');
   setTimeout(() => t.classList.remove('show'), 2500);
 }
 
 let db, currentYear, currentMonth;
 let transactions = [];
-let _listaEntradas = [];
-let _listaSaidas   = [];
+let caixaInicial = 0;
+let _listaEntradas = [], _listaSaidas = [];
+let _filtroEntrada = 'todos', _ordemEntrada = 'data';
+let _filtroSaida   = 'todos', _ordemSaida   = 'data';
 
 function currentMonthKey() {
   return `${currentYear}-${String(currentMonth).padStart(2,'0')}`;
@@ -437,37 +476,92 @@ const MONTHS_PT = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho',
                    'Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 
 function updateMonthLabel() {
-  document.getElementById('month-label').textContent =
-    `${MONTHS_PT[currentMonth-1]} ${currentYear}`;
+  document.getElementById('month-label').textContent = `${MONTHS_PT[currentMonth-1]} ${currentYear}`;
 }
 
 document.getElementById('btn-prev').addEventListener('click', () => {
-  currentMonth--;
-  if (currentMonth < 1) { currentMonth = 12; currentYear--; }
+  currentMonth--; if (currentMonth < 1) { currentMonth = 12; currentYear--; }
   updateMonthLabel(); loadData();
 });
-
 document.getElementById('btn-next').addEventListener('click', () => {
-  currentMonth++;
-  if (currentMonth > 12) { currentMonth = 1; currentYear++; }
+  currentMonth++; if (currentMonth > 12) { currentMonth = 1; currentYear++; }
   updateMonthLabel(); loadData();
 });
 
-// ✅ Funções de filtro por nome
-window._filtrarEntradas = function() {
-  const termo = document.getElementById('search-entradas').value.toLowerCase().trim();
-  const filtrado = termo ? _listaEntradas.filter(t => t.desc.toLowerCase().includes(termo)) : _listaEntradas;
-  _renderEntradas(filtrado);
-  const countEl = document.getElementById('count-entradas');
-  countEl.textContent = termo ? `${filtrado.length} de ${_listaEntradas.length} resultado(s)` : '';
+async function loadCaixa() {
+  try {
+    const ref = doc(db, 'caixa', currentMonthKey());
+    const snap = await getDoc(ref);
+    caixaInicial = snap.exists() ? (snap.data().valor || 0) : 0;
+  } catch { caixaInicial = 0; }
+  document.getElementById('inp-caixa').value = caixaInicial > 0 ? caixaInicial : '';
+  document.getElementById('caixa-atual-label').textContent = fmt(caixaInicial);
+  document.getElementById('total-caixa').textContent = fmt(caixaInicial);
+}
+
+window._salvarCaixa = async function() {
+  const val = parseFloat(document.getElementById('inp-caixa').value);
+  if (isNaN(val) || val < 0) { showToast('⚠️ Informe um valor válido'); return; }
+  try {
+    await setDoc(doc(db, 'caixa', currentMonthKey()), { valor: val, monthKey: currentMonthKey() });
+    caixaInicial = val;
+    document.getElementById('caixa-atual-label').textContent = fmt(val);
+    document.getElementById('total-caixa').textContent = fmt(val);
+    showToast('✅ Caixa inicial salvo!');
+    renderAll();
+  } catch(e) { showToast('❌ Erro ao salvar caixa: ' + e.message); }
 };
 
-window._filtrarSaidas = function() {
+window._setFiltroEntrada = function(f) {
+  _filtroEntrada = f;
+  ['fe-todos','fe-recebido','fe-pendente'].forEach(id => document.getElementById(id).className = 'filter-btn');
+  const map = { todos:'fe-todos', recebido:'fe-recebido', pendente:'fe-pendente' };
+  if (map[f]) document.getElementById(map[f]).classList.add('ativo');
+  window._aplicarFiltrosEntradas();
+};
+window._setOrdemEntrada = function() {
+  _ordemEntrada = _ordemEntrada === 'data' ? 'valor' : 'data';
+  const btn = document.getElementById('fe-valor');
+  btn.textContent = _ordemEntrada === 'valor' ? '↕ Data' : '↕ Valor';
+  btn.classList.toggle('ativo', _ordemEntrada === 'valor');
+  window._aplicarFiltrosEntradas();
+};
+window._aplicarFiltrosEntradas = function() {
+  const termo = document.getElementById('search-entradas').value.toLowerCase().trim();
+  let list = [..._listaEntradas];
+  if (_filtroEntrada === 'recebido') list = list.filter(t => t.pago);
+  if (_filtroEntrada === 'pendente') list = list.filter(t => !t.pago);
+  if (termo) list = list.filter(t => t.desc.toLowerCase().includes(termo));
+  if (_ordemEntrada === 'valor') list.sort((a,b) => b.valor - a.valor);
+  _renderEntradas(list);
+  const countEl = document.getElementById('count-entradas');
+  countEl.textContent = (termo || _filtroEntrada !== 'todos') ? `${list.length} de ${_listaEntradas.length} resultado(s)` : '';
+};
+
+window._setFiltroSaida = function(f) {
+  _filtroSaida = f;
+  ['fs-todos','fs-pago','fs-pendente'].forEach(id => document.getElementById(id).className = 'filter-btn');
+  const map = { todos:'fs-todos', pago:'fs-pago', pendente:'fs-pendente' };
+  if (map[f]) document.getElementById(map[f]).classList.add('ativo');
+  window._aplicarFiltrosSaidas();
+};
+window._setOrdemSaida = function() {
+  _ordemSaida = _ordemSaida === 'data' ? 'valor' : 'data';
+  const btn = document.getElementById('fs-valor');
+  btn.textContent = _ordemSaida === 'valor' ? '↕ Data' : '↕ Valor';
+  btn.classList.toggle('ativo', _ordemSaida === 'valor');
+  window._aplicarFiltrosSaidas();
+};
+window._aplicarFiltrosSaidas = function() {
   const termo = document.getElementById('search-saidas').value.toLowerCase().trim();
-  const filtrado = termo ? _listaSaidas.filter(t => t.desc.toLowerCase().includes(termo)) : _listaSaidas;
-  _renderSaidas(filtrado);
+  let list = [..._listaSaidas];
+  if (_filtroSaida === 'pago')     list = list.filter(t => t.pago);
+  if (_filtroSaida === 'pendente') list = list.filter(t => !t.pago);
+  if (termo) list = list.filter(t => t.desc.toLowerCase().includes(termo));
+  if (_ordemSaida === 'valor') list.sort((a,b) => b.valor - a.valor);
+  _renderSaidas(list);
   const countEl = document.getElementById('count-saidas');
-  countEl.textContent = termo ? `${filtrado.length} de ${_listaSaidas.length} resultado(s)` : '';
+  countEl.textContent = (termo || _filtroSaida !== 'todos') ? `${list.length} de ${_listaSaidas.length} resultado(s)` : '';
 };
 
 document.getElementById('btn-entrada').addEventListener('click', async () => {
@@ -475,35 +569,25 @@ document.getElementById('btn-entrada').addEventListener('click', async () => {
   const valor  = parseFloat(document.getElementById('inp-e-valor').value);
   const dia    = parseInt(document.getElementById('inp-e-dia').value);
   const parcelado = document.getElementById('chk-parcelas-e').checked;
-
   if (!origem) { showToast('⚠️ Informe a origem'); return; }
   if (!valor || valor <= 0) { showToast('⚠️ Informe um valor válido'); return; }
   if (!dia || dia < 1 || dia > 31) { showToast('⚠️ Informe o dia do recebimento'); return; }
-
   try {
     if (parcelado) {
       const ini = document.getElementById('inp-e-mes-ini').value;
       const fim = document.getElementById('inp-e-mes-fim').value;
       if (!ini || !fim || ini > fim) { showToast('⚠️ Período inválido'); return; }
-      const datas = gerarDatasParceladas(ini, fim, dia);
-      const total = datas.length;
+      const datas = gerarDatasParceladas(ini, fim, dia); const total = datas.length;
       for (let i = 0; i < datas.length; i++) {
         const data = datas[i];
-        const monthKey = data.substring(0,7);
-        await addDoc(collection(db, 'financeiro'), {
-          desc: total > 1 ? `${origem} (${i+1}/${total})` : origem,
-          valor, data, tipo: 'entrada', pago: false, monthKey, criadoEm: Date.now()
-        });
+        await addDoc(collection(db, 'financeiro'), { desc: total > 1 ? `${origem} (${i+1}/${total})` : origem, valor, data, tipo: 'entrada', pago: false, monthKey: data.substring(0,7), criadoEm: Date.now() });
       }
       showToast(`✅ ${total} recebimento(s) criados!`);
     } else {
       const diasNoMes = new Date(currentYear, currentMonth, 0).getDate();
       const diaReal = Math.min(dia, diasNoMes);
       const data = `${currentYear}-${String(currentMonth).padStart(2,'0')}-${String(diaReal).padStart(2,'0')}`;
-      const monthKey = data.substring(0,7);
-      await addDoc(collection(db, 'financeiro'), {
-        desc: origem, valor, data, tipo: 'entrada', pago: false, monthKey, criadoEm: Date.now()
-      });
+      await addDoc(collection(db, 'financeiro'), { desc: origem, valor, data, tipo: 'entrada', pago: false, monthKey: data.substring(0,7), criadoEm: Date.now() });
       showToast('✅ Recebimento registrado');
     }
     document.getElementById('inp-e-origem').value = '';
@@ -512,24 +596,13 @@ document.getElementById('btn-entrada').addEventListener('click', async () => {
   } catch(e) { showToast('❌ Erro: ' + e.message); }
 });
 
-const MONTHS_OPTS = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho',
-                     'Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-
+const MONTHS_OPTS = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 function popularSelects() {
-  const hoje = new Date();
-  const anoAtual = hoje.getFullYear();
-  const mesAtual = String(hoje.getMonth()+1).padStart(2,'0');
+  const hoje = new Date(); const anoAtual = hoje.getFullYear(); const mesAtual = String(hoje.getMonth()+1).padStart(2,'0');
   ['inp-s-mes-ini','inp-s-mes-fim','inp-e-mes-ini','inp-e-mes-fim'].forEach(id => {
-    const sel = document.getElementById(id);
-    if (!sel) return;
-    sel.innerHTML = '';
-    for (let a = anoAtual; a <= anoAtual + 2; a++) {
-      for (let m = 1; m <= 12; m++) {
-        const val = `${a}-${String(m).padStart(2,'0')}`;
-        const label = `${MONTHS_OPTS[m-1]} ${a}`;
-        sel.innerHTML += `<option value="${val}">${label}</option>`;
-      }
-    }
+    const sel = document.getElementById(id); if (!sel) return; sel.innerHTML = '';
+    for (let a = anoAtual; a <= anoAtual + 2; a++)
+      for (let m = 1; m <= 12; m++) sel.innerHTML += `<option value="${a}-${String(m).padStart(2,'0')}">${MONTHS_OPTS[m-1]} ${a}</option>`;
   });
   document.getElementById('inp-s-mes-ini').value = `${anoAtual}-${mesAtual}`;
   document.getElementById('inp-s-mes-fim').value = `${anoAtual}-12`;
@@ -537,59 +610,41 @@ function popularSelects() {
   document.getElementById('inp-e-mes-fim').value = `${anoAtual}-12`;
   atualizarPreview();
 }
-
 window._toggleParcelasEntradaUI = function() {
-  const ativo = document.getElementById('chk-parcelas-e').checked;
-  document.getElementById('parcelas-box-e').classList.toggle('ativo', ativo);
+  document.getElementById('parcelas-box-e').classList.toggle('ativo', document.getElementById('chk-parcelas-e').checked);
   window._atualizarPreviewEntrada();
 };
-
 window._atualizarPreviewEntrada = function() {
   const el = document.getElementById('parcelas-preview-e');
   if (!document.getElementById('chk-parcelas-e').checked) { el.textContent = ''; return; }
-  const ini = document.getElementById('inp-e-mes-ini').value;
-  const fim = document.getElementById('inp-e-mes-fim').value;
+  const ini = document.getElementById('inp-e-mes-ini').value; const fim = document.getElementById('inp-e-mes-fim').value;
   if (!ini || !fim || ini > fim) { el.textContent = '⚠️ Período inválido'; return; }
-  const meses = contarMeses(ini, fim);
-  el.textContent = `Serão criados ${meses} recebimento(s) — um para cada mês.`;
+  el.textContent = `Serão criados ${contarMeses(ini, fim)} recebimento(s) — um para cada mês.`;
 };
-
 window._toggleParcelasUI = function() {
-  const ativo = document.getElementById('chk-parcelas').checked;
-  document.getElementById('parcelas-box').classList.toggle('ativo', ativo);
+  document.getElementById('parcelas-box').classList.toggle('ativo', document.getElementById('chk-parcelas').checked);
   atualizarPreview();
 };
-
 function atualizarPreview() {
   const el = document.getElementById('parcelas-preview');
   if (!document.getElementById('chk-parcelas').checked) { el.textContent = ''; return; }
-  const ini = document.getElementById('inp-s-mes-ini').value;
-  const fim = document.getElementById('inp-s-mes-fim').value;
+  const ini = document.getElementById('inp-s-mes-ini').value; const fim = document.getElementById('inp-s-mes-fim').value;
   if (!ini || !fim || ini > fim) { el.textContent = '⚠️ Período inválido'; return; }
-  const meses = contarMeses(ini, fim);
-  el.textContent = `Serão criadas ${meses} parcela(s) — uma para cada mês.`;
+  el.textContent = `Serão criadas ${contarMeses(ini, fim)} parcela(s) — uma para cada mês.`;
 }
-
 document.getElementById('inp-s-mes-ini')?.addEventListener('change', atualizarPreview);
 document.getElementById('inp-s-mes-fim')?.addEventListener('change', atualizarPreview);
-
 function contarMeses(ini, fim) {
-  const [ay, am] = ini.split('-').map(Number);
-  const [by, bm] = fim.split('-').map(Number);
+  const [ay, am] = ini.split('-').map(Number); const [by, bm] = fim.split('-').map(Number);
   return (by - ay) * 12 + (bm - am) + 1;
 }
-
 function gerarDatasParceladas(ini, fim, dia) {
-  const datas = [];
-  const [ay, am] = ini.split('-').map(Number);
-  const [by, bm] = fim.split('-').map(Number);
+  const datas = []; const [ay, am] = ini.split('-').map(Number); const [by, bm] = fim.split('-').map(Number);
   let y = ay, m = am;
   while (y < by || (y === by && m <= bm)) {
     const diasNoMes = new Date(y, m, 0).getDate();
-    const diaReal = Math.min(dia, diasNoMes);
-    datas.push(`${y}-${String(m).padStart(2,'0')}-${String(diaReal).padStart(2,'0')}`);
-    m++;
-    if (m > 12) { m = 1; y++; }
+    datas.push(`${y}-${String(m).padStart(2,'0')}-${String(Math.min(dia, diasNoMes)).padStart(2,'0')}`);
+    m++; if (m > 12) { m = 1; y++; }
   }
   return datas;
 }
@@ -599,37 +654,24 @@ document.getElementById('btn-saida').addEventListener('click', async () => {
   const valor = parseFloat(document.getElementById('inp-s-valor').value);
   const dia   = parseInt(document.getElementById('inp-s-dia').value);
   const parcelado = document.getElementById('chk-parcelas').checked;
-
   if (!desc) { showToast('⚠️ Informe a descrição'); return; }
   if (!valor || valor <= 0) { showToast('⚠️ Informe um valor válido'); return; }
   if (!dia || dia < 1 || dia > 31) { showToast('⚠️ Informe o dia de vencimento'); return; }
-
   try {
     if (parcelado) {
-      const ini = document.getElementById('inp-s-mes-ini').value;
-      const fim = document.getElementById('inp-s-mes-fim').value;
+      const ini = document.getElementById('inp-s-mes-ini').value; const fim = document.getElementById('inp-s-mes-fim').value;
       if (!ini || !fim || ini > fim) { showToast('⚠️ Período de parcelas inválido'); return; }
-      const datas = gerarDatasParceladas(ini, fim, dia);
-      const total = datas.length;
+      const datas = gerarDatasParceladas(ini, fim, dia); const total = datas.length;
       for (let i = 0; i < datas.length; i++) {
         const data = datas[i];
-        const monthKey = data.substring(0,7);
-        await addDoc(collection(db, 'financeiro'), {
-          desc: `${desc} (${i+1}/${total})`,
-          valor, data, tipo: 'saida', pago: false, monthKey, criadoEm: Date.now()
-        });
+        await addDoc(collection(db, 'financeiro'), { desc: `${desc} (${i+1}/${total})`, valor, data, tipo: 'saida', pago: false, monthKey: data.substring(0,7), criadoEm: Date.now() });
       }
       showToast(`✅ ${total} parcela(s) criadas!`);
     } else {
-      const anoAtual = currentYear;
-      const mesAtual = String(currentMonth).padStart(2,'0');
-      const diasNoMes = new Date(anoAtual, currentMonth, 0).getDate();
+      const diasNoMes = new Date(currentYear, currentMonth, 0).getDate();
       const diaReal = Math.min(dia, diasNoMes);
-      const data = `${anoAtual}-${mesAtual}-${String(diaReal).padStart(2,'0')}`;
-      const monthKey = data.substring(0,7);
-      await addDoc(collection(db, 'financeiro'), {
-        desc, valor, data, tipo: 'saida', pago: false, monthKey, criadoEm: Date.now()
-      });
+      const data = `${currentYear}-${String(currentMonth).padStart(2,'0')}-${String(diaReal).padStart(2,'0')}`;
+      await addDoc(collection(db, 'financeiro'), { desc, valor, data, tipo: 'saida', pago: false, monthKey: data.substring(0,7), criadoEm: Date.now() });
       showToast('✅ Conta adicionada');
     }
     document.getElementById('inp-s-desc').value = '';
@@ -639,21 +681,16 @@ document.getElementById('btn-saida').addEventListener('click', async () => {
 });
 
 async function deletar(id) {
-  try {
-    await deleteDoc(doc(db, 'financeiro', id));
-    showToast('🗑️ Removido');
-    loadData();
-  } catch(e) { showToast('❌ Erro ao remover'); }
+  try { await deleteDoc(doc(db, 'financeiro', id)); showToast('🗑️ Removido'); loadData(); }
+  catch(e) { showToast('❌ Erro ao remover'); }
 }
-
 async function togglePago(id, atual) {
-  try {
-    await updateDoc(doc(db, 'financeiro', id), { pago: !atual });
-    loadData();
-  } catch(e) { showToast('❌ Erro ao atualizar'); }
+  try { await updateDoc(doc(db, 'financeiro', id), { pago: !atual }); loadData(); }
+  catch(e) { showToast('❌ Erro ao atualizar'); }
 }
 
 async function loadData() {
+  await loadCaixa();
   const q = query(collection(db, 'financeiro'), where('monthKey','==', currentMonthKey()));
   const snap = await getDocs(q);
   transactions = [];
@@ -662,125 +699,137 @@ async function loadData() {
   renderAll();
 }
 
+function getDatasReferencia() {
+  const hoje = new Date(); const pad = n => String(n).padStart(2,'0');
+  const dataHoje = `${hoje.getFullYear()}-${pad(hoje.getMonth()+1)}-${pad(hoje.getDate())}`;
+  const amanha = new Date(hoje); amanha.setDate(amanha.getDate() + 1);
+  const dataAmanha = `${amanha.getFullYear()}-${pad(amanha.getMonth()+1)}-${pad(amanha.getDate())}`;
+  return { dataHoje, dataAmanha };
+}
+
 function renderAll() {
   const entradas = transactions.filter(t => t.tipo === 'entrada');
   const saidas   = transactions.filter(t => t.tipo === 'saida');
-
   const totalEntradasRecebidas = entradas.filter(t => t.pago).reduce((s,t) => s+t.valor, 0);
-  const totalEntradasPend      = entradas.filter(t => !t.pago).reduce((s,t) => s+t.valor, 0);
   const totalSaidasPagas       = saidas.filter(t => t.pago).reduce((s,t) => s+t.valor, 0);
   const totalSaidasPend        = saidas.filter(t => !t.pago).reduce((s,t) => s+t.valor, 0);
-  const saldo = totalEntradasRecebidas - totalSaidasPagas;
+  const saldo = caixaInicial + totalEntradasRecebidas - totalSaidasPagas;
 
+  document.getElementById('total-caixa').textContent = fmt(caixaInicial);
   document.getElementById('total-entradas').textContent = fmt(totalEntradasRecebidas);
-  document.getElementById('total-entradas-pend').textContent = fmt(totalEntradasPend);
   document.getElementById('total-saidas-pagas').textContent = fmt(totalSaidasPagas);
   document.getElementById('total-saidas-pendentes').textContent = fmt(totalSaidasPend);
-
   const saldoEl = document.getElementById('saldo');
   saldoEl.textContent = (saldo < 0 ? '-' : '') + fmt(saldo);
   saldoEl.className = 'value ' + (saldo >= 0 ? 'green' : 'red');
 
-  // Salva nas variáveis globais e renderiza respeitando filtro ativo
+  const totalContas = saidas.length;
+  const contasPagas = saidas.filter(t => t.pago).length;
+  const pct = totalContas > 0 ? Math.round((contasPagas / totalContas) * 100) : 0;
+  document.getElementById('progresso-pct').textContent = `${pct}%`;
+  document.getElementById('progresso-left').textContent = `${contasPagas} de ${totalContas} contas pagas`;
+  document.getElementById('progresso-right').textContent = totalSaidasPend > 0 ? `${fmt(totalSaidasPend)} ainda pendente` : '✅ Tudo pago!';
+  const fill = document.getElementById('progresso-fill');
+  fill.style.width = `${pct}%`;
+  fill.style.background = pct === 100 ? 'var(--green)' : pct >= 60 ? 'var(--blue)' : 'var(--yellow)';
+
+  const { dataHoje, dataAmanha } = getDatasReferencia();
+  const pendentes = saidas.filter(t => !t.pago && t.data >= dataHoje).sort((a,b) => a.data.localeCompare(b.data));
+  const pvEl = document.getElementById('proximo-venc');
+  if (pendentes.length > 0) {
+    const prox = pendentes[0]; pvEl.style.display = 'flex';
+    document.getElementById('pv-info').textContent = `${prox.desc} — ${fmt(prox.valor)} (${formatarData(prox.data)})`;
+    const diasEl = document.getElementById('pv-dias');
+    if (prox.data === dataHoje) { diasEl.textContent = 'HOJE'; diasEl.className = 'pv-dias hoje'; }
+    else if (prox.data === dataAmanha) { diasEl.textContent = 'AMANHÃ'; diasEl.className = 'pv-dias amanha'; }
+    else {
+      const diff = Math.round((new Date(prox.data+'T12:00:00') - new Date(dataHoje+'T12:00:00')) / 86400000);
+      diasEl.textContent = `em ${diff} dias`; diasEl.className = 'pv-dias normal';
+    }
+  } else { pvEl.style.display = 'none'; }
+
   _listaEntradas = [...entradas].sort((a,b) => a.data.localeCompare(b.data));
   _listaSaidas   = [...saidas].sort((a,b) => a.data.localeCompare(b.data));
-
-  window._filtrarEntradas();
-  window._filtrarSaidas();
+  window._aplicarFiltrosEntradas();
+  window._aplicarFiltrosSaidas();
   renderCalendario();
 }
 
 function _renderEntradas(list) {
   const el = document.getElementById('list-entradas');
-  if (list.length === 0) {
-    el.innerHTML = '<div class="empty">Nenhum recebimento encontrado.</div>';
-    return;
-  }
+  if (list.length === 0) { el.innerHTML = '<div class="empty">Nenhum recebimento encontrado.</div>'; return; }
+  const { dataHoje, dataAmanha } = getDatasReferencia();
   el.innerHTML = list.map(t => {
     const recebido = t.pago === true;
-    return `
-    <div class="tx-item ${recebido ? '' : 'pendente'}">
-      <button class="tx-check ${recebido ? 'pago' : ''}" onclick="window._togglePago('${t.id}', ${recebido})" title="${recebido ? 'Desmarcar' : 'Marcar como recebido'}">
-        ${recebido ? '✓' : ''}
-      </button>
+    let cls = recebido ? '' : 'pendente';
+    if (!recebido && t.data === dataHoje) cls = 'vence-hoje';
+    else if (!recebido && t.data === dataAmanha) cls = 'vence-amanha';
+    const badge = !recebido && t.data === dataHoje ? ' 🔴 <strong style="color:var(--red)">HOJE</strong>' :
+                  !recebido && t.data === dataAmanha ? ' 🟡 <strong style="color:var(--yellow)">AMANHÃ</strong>' : '';
+    return `<div class="tx-item ${cls}">
+      <button class="tx-check ${recebido ? 'pago' : ''}" onclick="window._togglePago('${t.id}', ${recebido})">${recebido ? '✓' : ''}</button>
       <div class="tx-info">
         <div class="tx-desc">${t.desc}</div>
-        <div class="tx-meta">Previsto ${formatarData(t.data)}${t.dataPagamento ? ' · <span style="color:var(--blue)">recebido em ' + formatarData(t.dataPagamento) + '</span>' : ''} · ${recebido ? '<span style="color:var(--green)">recebido</span>' : '<span style="color:var(--yellow)">aguardando</span>'}</div>
+        <div class="tx-meta">Previsto ${formatarData(t.data)}${t.dataPagamento ? ' · <span style="color:var(--blue)">recebido em '+formatarData(t.dataPagamento)+'</span>' : ''} · ${recebido ? '<span style="color:var(--green)">recebido</span>' : '<span style="color:var(--yellow)">aguardando</span>'}${badge}</div>
       </div>
       <div class="tx-value ${recebido ? 'green' : 'muted'}">+${fmt(t.valor)}</div>
-      <button class="tx-edit" onclick="window._abrirModal('${t.id}')" title="Editar">✏️</button>
-      <button class="tx-del" onclick="window._del('${t.id}')" title="Remover">✕</button>
+      <button class="tx-edit" onclick="window._abrirModal('${t.id}')">✏️</button>
+      <button class="tx-del" onclick="window._del('${t.id}')">✕</button>
     </div>`;
   }).join('');
 }
 
 function _renderSaidas(list) {
   const el = document.getElementById('list-saidas');
-  if (list.length === 0) {
-    el.innerHTML = '<div class="empty">Nenhuma conta encontrada.</div>';
-    return;
-  }
+  if (list.length === 0) { el.innerHTML = '<div class="empty">Nenhuma conta encontrada.</div>'; return; }
+  const { dataHoje, dataAmanha } = getDatasReferencia();
   el.innerHTML = list.map(t => {
     const pago = t.pago === true;
-    return `
-    <div class="tx-item ${pago ? '' : 'pendente'}">
-      <button class="tx-check ${pago ? 'pago' : ''}" onclick="window._togglePago('${t.id}', ${pago})" title="${pago ? 'Desmarcar' : 'Marcar como pago'}">
-        ${pago ? '✓' : ''}
-      </button>
+    let cls = pago ? '' : 'pendente';
+    if (!pago && t.data === dataHoje) cls = 'vence-hoje';
+    else if (!pago && t.data === dataAmanha) cls = 'vence-amanha';
+    const badge = !pago && t.data === dataHoje ? ' 🔴 <strong style="color:var(--red)">HOJE</strong>' :
+                  !pago && t.data === dataAmanha ? ' 🟡 <strong style="color:var(--yellow)">AMANHÃ</strong>' : '';
+    return `<div class="tx-item ${cls}">
+      <button class="tx-check ${pago ? 'pago' : ''}" onclick="window._togglePago('${t.id}', ${pago})">${pago ? '✓' : ''}</button>
       <div class="tx-info">
         <div class="tx-desc">${t.desc}</div>
-        <div class="tx-meta">Vence ${formatarData(t.data)}${t.dataPagamento ? ' · <span style="color:var(--blue)">pago em ' + formatarData(t.dataPagamento) + '</span>' : ''} · ${pago ? '<span style="color:var(--green)">pago</span>' : '<span style="color:var(--yellow)">pendente</span>'}</div>
+        <div class="tx-meta">Vence ${formatarData(t.data)}${t.dataPagamento ? ' · <span style="color:var(--blue)">pago em '+formatarData(t.dataPagamento)+'</span>' : ''} · ${pago ? '<span style="color:var(--green)">pago</span>' : '<span style="color:var(--yellow)">pendente</span>'}${badge}</div>
       </div>
       <div class="tx-value ${pago ? 'red' : 'muted'}">-${fmt(t.valor)}</div>
-      <button class="tx-edit" onclick="window._abrirModal('${t.id}')" title="Editar">✏️</button>
-      <button class="tx-del" onclick="window._del('${t.id}')" title="Remover">✕</button>
+      <button class="tx-edit" onclick="window._abrirModal('${t.id}')">✏️</button>
+      <button class="tx-del" onclick="window._del('${t.id}')">✕</button>
     </div>`;
   }).join('');
 }
 
 function renderCalendario() {
   const el = document.getElementById('cal-grid');
-  if (transactions.length === 0) {
-    el.innerHTML = '<div class="cal-empty">Nenhum lançamento este mês.</div>';
-    return;
-  }
-
+  if (transactions.length === 0) { el.innerHTML = '<div class="cal-empty">Nenhum lançamento este mês.</div>'; return; }
   const porDia = {};
-  transactions.forEach(t => {
-    const dia = t.data.split('-')[2];
-    if (!porDia[dia]) porDia[dia] = [];
-    porDia[dia].push(t);
-  });
-
+  transactions.forEach(t => { const dia = t.data.split('-')[2]; if (!porDia[dia]) porDia[dia] = []; porDia[dia].push(t); });
   const hoje = new Date();
   const diaHoje = String(hoje.getDate()).padStart(2,'0');
   const mesHoje = String(hoje.getMonth()+1).padStart(2,'0');
   const anoHoje = String(hoje.getFullYear());
   const estesMes = currentMonthKey() === `${anoHoje}-${mesHoje}`;
-
   const dias = Object.keys(porDia).sort();
   const DIAS_SEMANA = ['Dom','Seg','Ter','Qua','Qui','Sex','Sáb'];
-
   el.innerHTML = dias.map(dia => {
     const items = porDia[dia];
     const temPendente = items.some(t => t.tipo === 'saida' && !t.pago);
     const tudoPago    = items.every(t => t.tipo === 'entrada' || t.pago);
     const vencido     = temPendente && estesMes && dia < diaHoje;
-
-    let cls = '';
-    if (vencido) cls = 'vencido';
-    else if (temPendente) cls = 'tem-pendente';
-    else if (tudoPago) cls = 'tudo-pago';
-
+    const ehHoje      = estesMes && dia === diaHoje;
+    let cls = ehHoje ? 'hoje ' : '';
+    if (vencido) cls += 'vencido'; else if (temPendente) cls += 'tem-pendente'; else if (tudoPago) cls += 'tudo-pago';
     const dataObj = new Date(currentYear, currentMonth - 1, parseInt(dia));
     const nomeDia = DIAS_SEMANA[dataObj.getDay()];
-
-    const totalEntDia  = items.filter(t => t.tipo === 'entrada').reduce((s,t) => s+t.valor, 0);
-    const totalSaiDia  = items.filter(t => t.tipo === 'saida').reduce((s,t) => s+t.valor, 0);
+    const totalEntDia = items.filter(t => t.tipo === 'entrada').reduce((s,t) => s+t.valor, 0);
+    const totalSaiDia = items.filter(t => t.tipo === 'saida').reduce((s,t) => s+t.valor, 0);
     const qtd = items.length;
-
     return `<div class="cal-day ${cls}" onclick="window._abrirModalDia('${dia}')">
-      <div class="cal-day-num">${parseInt(dia)}</div>
+      <div class="cal-day-num">${parseInt(dia)}${ehHoje ? ' <span style="font-size:0.55rem;color:var(--blue)">HOJE</span>' : ''}</div>
       <div class="cal-day-label">${nomeDia}${vencido ? ' · <span style="color:var(--red)">vencido</span>' : ''}</div>
       <div class="cal-day-items" style="margin-top:10px;">
         ${totalEntDia > 0 ? `<div class="cal-chip entrada">⬆ ${fmt(totalEntDia)}</div>` : ''}
@@ -796,14 +845,11 @@ window._abrirModalDia = function(dia) {
   const dataObj = new Date(currentYear, currentMonth - 1, parseInt(dia));
   const DIAS_SEMANA_FULL = ['Domingo','Segunda','Terça','Quarta','Quinta','Sexta','Sábado'];
   const MONTHS_FULL = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-
   document.getElementById('modal-dia-titulo').textContent = `${parseInt(dia)} de ${MONTHS_FULL[currentMonth-1]}`;
   document.getElementById('modal-dia-subtitulo').textContent = DIAS_SEMANA_FULL[dataObj.getDay()];
-
   const totalEntradas = items.filter(t => t.tipo === 'entrada').reduce((s,t) => s+t.valor, 0);
   const totalSaidas   = items.filter(t => t.tipo === 'saida').reduce((s,t) => s+t.valor, 0);
   const pendentes     = items.filter(t => t.tipo === 'saida' && !t.pago).length;
-
   document.getElementById('modal-dia-lista').innerHTML = `
     <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;">
       ${totalEntradas > 0 ? `<span style="background:rgba(45,212,160,0.12);color:var(--green);border-radius:6px;padding:4px 10px;font-size:0.75rem;font-weight:600">⬆ +${fmt(totalEntradas)}</span>` : ''}
@@ -811,8 +857,7 @@ window._abrirModalDia = function(dia) {
       ${pendentes > 0 ? `<span style="background:rgba(245,200,66,0.12);color:var(--yellow);border-radius:6px;padding:4px 10px;font-size:0.75rem;font-weight:600">${pendentes} pendente(s)</span>` : ''}
     </div>
     ${items.map(t => {
-      const isEntrada = t.tipo === 'entrada';
-      const pago = t.pago === true;
+      const isEntrada = t.tipo === 'entrada'; const pago = t.pago === true;
       const badgeCls = isEntrada ? 'entrada' : (pago ? 'pago' : 'pend');
       const badgeLabel = isEntrada ? 'recebimento' : (pago ? 'pago' : 'pendente');
       const pgto = t.dataPagamento ? `<br>📅 Pgto: ${formatarData(t.dataPagamento)}` : '';
@@ -827,25 +872,13 @@ window._abrirModalDia = function(dia) {
         </div>
         <span class="dia-badge ${badgeCls}">${badgeLabel}</span>
       </div>`;
-    }).join('')}
-  `;
-
+    }).join('')}`;
   document.getElementById('modal-dia-overlay').classList.remove('hidden');
 };
+window._fecharModalDia = function() { document.getElementById('modal-dia-overlay').classList.add('hidden'); };
+document.getElementById('modal-dia-overlay').addEventListener('click', function(e) { if (e.target === this) window._fecharModalDia(); });
 
-window._fecharModalDia = function() {
-  document.getElementById('modal-dia-overlay').classList.add('hidden');
-};
-
-document.getElementById('modal-dia-overlay').addEventListener('click', function(e) {
-  if (e.target === this) window._fecharModalDia();
-});
-
-function formatarData(d) {
-  const [y,m,day] = d.split('-');
-  return `${day}/${m}/${y}`;
-}
-
+function formatarData(d) { const [y,m,day] = d.split('-'); return `${day}/${m}/${y}`; }
 window._del = deletar;
 window._togglePago = togglePago;
 
@@ -854,21 +887,14 @@ window._toggleTema = function() {
   document.getElementById('btn-tema').textContent = isLight ? '☀️' : '🌙';
   localStorage.setItem('tema_financeiro', isLight ? 'light' : 'dark');
 };
-
 (function() {
   const saved = localStorage.getItem('tema_financeiro');
-  if (saved === 'light') {
-    document.documentElement.classList.add('light');
-    const btn = document.getElementById('btn-tema');
-    if (btn) btn.textContent = '☀️';
-  }
+  if (saved === 'light') { document.documentElement.classList.add('light'); const btn = document.getElementById('btn-tema'); if (btn) btn.textContent = '☀️'; }
 })();
 
 let _editandoId = null;
-
 window._abrirModal = function(id) {
-  const t = transactions.find(x => x.id === id);
-  if (!t) return;
+  const t = transactions.find(x => x.id === id); if (!t) return;
   _editandoId = id;
   document.getElementById('modal-titulo').textContent = t.tipo === 'entrada' ? '✏️ Editar recebimento' : '✏️ Editar conta';
   document.getElementById('modal-data-label').textContent = t.tipo === 'entrada' ? 'Data prevista' : 'Data de vencimento';
@@ -879,53 +905,32 @@ window._abrirModal = function(id) {
   document.getElementById('modal-data-pgto').value = t.dataPagamento || '';
   document.getElementById('modal-overlay').classList.remove('hidden');
 };
-
-window._fecharModal = function() {
-  _editandoId = null;
-  document.getElementById('modal-overlay').classList.add('hidden');
-};
-
+window._fecharModal = function() { _editandoId = null; document.getElementById('modal-overlay').classList.add('hidden'); };
 window._salvarEdicao = async function() {
   if (!_editandoId) return;
-  const desc       = document.getElementById('modal-desc').value.trim();
-  const valor      = parseFloat(document.getElementById('modal-valor').value);
-  const data       = document.getElementById('modal-data').value;
+  const desc = document.getElementById('modal-desc').value.trim();
+  const valor = parseFloat(document.getElementById('modal-valor').value);
+  const data  = document.getElementById('modal-data').value;
   const dataPagamento = document.getElementById('modal-data-pgto').value || null;
   if (!desc) { showToast('⚠️ Informe a descrição'); return; }
   if (!valor || valor <= 0) { showToast('⚠️ Informe um valor válido'); return; }
   if (!data) { showToast('⚠️ Informe a data'); return; }
   try {
-    const update = { desc, valor, data, monthKey: data.substring(0,7), dataPagamento };
-    await updateDoc(doc(db, 'financeiro', _editandoId), update);
-    showToast('✅ Atualizado!');
-    window._fecharModal();
-    loadData();
+    await updateDoc(doc(db, 'financeiro', _editandoId), { desc, valor, data, monthKey: data.substring(0,7), dataPagamento });
+    showToast('✅ Atualizado!'); window._fecharModal(); loadData();
   } catch(e) { showToast('❌ Erro ao salvar: ' + e.message); }
 };
-
-document.getElementById('modal-overlay').addEventListener('click', function(e) {
-  if (e.target === this) window._fecharModal();
-});
+document.getElementById('modal-overlay').addEventListener('click', function(e) { if (e.target === this) window._fecharModal(); });
 
 document.getElementById('btn-connect-firebase').addEventListener('click', async () => {
   const raw = document.getElementById('fb-config-input').value.trim();
-  const errEl = document.getElementById('fb-err');
-  errEl.textContent = '';
+  const errEl = document.getElementById('fb-err'); errEl.textContent = '';
   let config;
+  try { const cleaned = raw.replace(/^.*?firebaseConfig\s*=\s*/, '').replace(/;?\s*$/, ''); config = JSON.parse(cleaned); }
+  catch { try { config = JSON.parse(raw); } catch { errEl.textContent = '❌ JSON inválido.'; return; } }
+  if (!config.projectId || !config.apiKey) { errEl.textContent = '❌ Faltam campos obrigatórios.'; return; }
   try {
-    const cleaned = raw.replace(/^.*?firebaseConfig\s*=\s*/, '').replace(/;?\s*$/, '');
-    config = JSON.parse(cleaned);
-  } catch {
-    try { config = JSON.parse(raw); } catch {
-      errEl.textContent = '❌ JSON inválido.'; return;
-    }
-  }
-  if (!config.projectId || !config.apiKey) {
-    errEl.textContent = '❌ Faltam campos obrigatórios.'; return;
-  }
-  try {
-    const app = initializeApp(config);
-    db = getFirestore(app);
+    const app = initializeApp(config); db = getFirestore(app);
     await getDocs(query(collection(db, 'financeiro'), where('monthKey','==','____')));
     localStorage.setItem('fb_config_financeiro', JSON.stringify(config));
     iniciarApp();
@@ -938,9 +943,7 @@ function iniciarApp() {
   const hoje = new Date();
   currentYear = hoje.getFullYear();
   currentMonth = hoje.getMonth() + 1;
-  popularSelects();
-  updateMonthLabel();
-  loadData();
+  popularSelects(); updateMonthLabel(); loadData();
 }
 
 (async () => {
@@ -949,8 +952,7 @@ function iniciarApp() {
     try {
       const config = JSON.parse(saved);
       document.getElementById('fb-config-input').value = JSON.stringify(config, null, 2);
-      const app = initializeApp(config);
-      db = getFirestore(app);
+      const app = initializeApp(config); db = getFirestore(app);
       await getDocs(query(collection(db, 'financeiro'), where('monthKey','==','____')));
       iniciarApp();
     } catch { localStorage.removeItem('fb_config_financeiro'); }
