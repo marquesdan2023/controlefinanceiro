@@ -18,9 +18,7 @@ header h1{font-family:'Orbitron',sans-serif;font-size:1.5rem;font-weight:700;let
 .month-nav button:hover,#btn-tema:hover{border-color:var(--blue)}
 .month-nav span{font-weight:700;min-width:140px;text-align:center}
 main{max-width:1100px;margin:0 auto;padding:14px 20px 40px}
-.summary-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin-bottom:18px}
-@media(max-width:1000px){.summary-grid{grid-template-columns:repeat(3,1fr)}}
-@media(max-width:600px){.summary-grid{grid-template-columns:1fr 1fr}}
+.summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:18px}
 .summary-card{background:var(--surface);border:1px solid var(--border);border-left:5px solid var(--blue);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow)}
 .summary-card:nth-child(1){border-left-color:var(--blue)}
 .summary-card:nth-child(2){border-left-color:var(--green)}
@@ -28,9 +26,11 @@ main{max-width:1100px;margin:0 auto;padding:14px 20px 40px}
 .summary-card:nth-child(4){border-left-color:var(--red)}
 .summary-card:nth-child(5){border-left-color:var(--yellow)}
 .summary-card:nth-child(6){border-left-color:var(--purple)}
+.summary-card:nth-child(7){border-left:5px dashed var(--blue)}
 .summary-card .label{font-size:.74rem;text-transform:uppercase;letter-spacing:.09em;color:var(--text-muted);margin-bottom:8px}
 .summary-card .value{font-family:'Orbitron',sans-serif;font-size:1.05rem;font-weight:800;line-height:1.25;word-break:break-word}
-.green{color:var(--green)}.red{color:var(--red)}.blue{color:var(--blue)}.yellow{color:var(--yellow)}.muted{color:var(--text-muted)}
+.summary-card .hint{font-size:.74rem;color:var(--text-muted);margin-top:6px;line-height:1.2}
+.green{color:var(--green)}.red{color:var(--red)}.blue{color:var(--blue)}.yellow{color:var(--yellow)}.muted{color:var(--text-muted)}.purple{color:var(--purple)}
 .tabs{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0 18px}
 .tab{background:var(--surface2);border:none;color:var(--text);border-radius:12px;padding:11px 20px;font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;transition:transform .1s,background .15s}
 .tab:hover{transform:translateY(-1px);background:var(--border)}
@@ -91,11 +91,13 @@ input:focus,select:focus{border-color:var(--blue)}
 .proj-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
 @media(max-width:700px){.proj-grid{grid-template-columns:1fr 1fr}}
 .proj-item{background:var(--surface);border:1px solid var(--border);border-left:5px solid var(--blue);border-radius:12px;padding:14px}
+.proj-item:nth-child(1){border-left-color:var(--purple)}
 .proj-item:nth-child(2){border-left-color:var(--yellow)}
 .proj-item:nth-child(3){border-left-color:var(--red)}
-.proj-item:nth-child(4){border-left-color:var(--green)}
+.proj-item:nth-child(4){border-left:5px dashed var(--blue)}
 .proj-item .label{font-size:.72rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);margin-bottom:6px}
 .proj-item .value{font-family:'Orbitron',sans-serif;font-size:1rem;font-weight:800}
+.proj-nota{margin-top:14px;display:flex;flex-direction:column;gap:6px;font-size:.92rem}
 .progresso-header{display:flex;justify-content:space-between;margin-bottom:10px}
 .progresso-bar-bg{background:var(--surface2);border-radius:99px;height:12px;overflow:hidden}
 .progresso-bar-fill{height:100%;border-radius:99px;transition:width .4s}
@@ -159,12 +161,13 @@ input:focus,select:focus{border-color:var(--blue)}
 
 <main>
   <div class="summary-grid">
-    <div class="summary-card"><div class="label">Caixa inicial</div><div class="value green" id="total-caixa">R$ 0,00</div></div>
-    <div class="summary-card"><div class="label">Total recebido</div><div class="value green" id="total-entradas">R$ 0,00</div></div>
-    <div class="summary-card"><div class="label">A receber</div><div class="value yellow" id="total-entradas-pend">R$ 0,00</div></div>
-    <div class="summary-card"><div class="label">Contas pagas</div><div class="value red" id="total-saidas-pagas">R$ 0,00</div></div>
-    <div class="summary-card"><div class="label">Contas pendentes</div><div class="value yellow" id="total-saidas-pendentes">R$ 0,00</div></div>
-    <div class="summary-card"><div class="label">Saldo disponível</div><div class="value blue" id="saldo">R$ 0,00</div></div>
+    <div class="summary-card"><div class="label">Caixa inicial</div><div class="value green" id="total-caixa">R$ 0,00</div><div class="hint">valor com que o mês começou</div></div>
+    <div class="summary-card"><div class="label">Total recebido</div><div class="value green" id="total-entradas">R$ 0,00</div><div class="hint">já caiu na conta</div></div>
+    <div class="summary-card"><div class="label">A receber</div><div class="value yellow" id="total-entradas-pend">R$ 0,00</div><div class="hint">ainda não marcado como recebido</div></div>
+    <div class="summary-card"><div class="label">Contas pagas</div><div class="value red" id="total-saidas-pagas">R$ 0,00</div><div class="hint">já saiu da conta</div></div>
+    <div class="summary-card"><div class="label">Contas pendentes</div><div class="value yellow" id="total-saidas-pendentes">R$ 0,00</div><div class="hint">ainda a pagar</div></div>
+    <div class="summary-card"><div class="label">Saldo real (em conta)</div><div class="value purple" id="saldo">R$ 0,00</div><div class="hint">só o que já entrou e saiu</div></div>
+    <div class="summary-card"><div class="label">Saldo previsto</div><div class="value blue" id="saldo-prev">R$ 0,00</div><div class="hint">se tudo for recebido e pago</div></div>
   </div>
 
   <div class="tabs">
@@ -261,10 +264,14 @@ input:focus,select:focus{border-color:var(--blue)}
     <div class="panel">
       <h2>🔮 Projeção do mês</h2>
       <div class="proj-grid">
-        <div class="proj-item"><div class="label">Saldo hoje</div><div class="value blue" id="pj-hoje">R$ 0,00</div></div>
+        <div class="proj-item"><div class="label">Saldo real (em conta)</div><div class="value purple" id="pj-hoje">R$ 0,00</div></div>
         <div class="proj-item"><div class="label">+ Ainda a receber</div><div class="value yellow" id="pj-receber">R$ 0,00</div></div>
         <div class="proj-item"><div class="label">− Ainda a pagar</div><div class="value red" id="pj-pagar">R$ 0,00</div></div>
         <div class="proj-item"><div class="label">Saldo previsto no fim do mês</div><div class="value" id="pj-fim">R$ 0,00</div></div>
+      </div>
+      <div class="proj-nota">
+        <div id="pj-dif"></div>
+        <div id="pj-inv" class="muted"></div>
       </div>
     </div>
     <div class="panel caixa-wrap">
@@ -616,21 +623,31 @@ function renderAll() {
   const E = transactions.filter(t => t.tipo === 'entrada'), S = transactions.filter(t => t.tipo === 'saida');
   const sum = (l, p) => l.filter(t => !!t.pago === p).reduce((s, t) => s + t.valor, 0);
   const rec = sum(E, true), arec = sum(E, false), pag = sum(S, true), pend = sum(S, false);
-  const saldo = caixaInicial + rec - pag, prev = saldo + arec - pend;
+  const saldoReal = caixaInicial + rec - pag;
+  const saldoPrev = saldoReal + arec - pend;
 
   $('total-caixa').textContent = fmt(caixaInicial);
   $('total-entradas').textContent = fmt(rec);
   $('total-entradas-pend').textContent = fmt(arec);
   $('total-saidas-pagas').textContent = fmt(pag);
   $('total-saidas-pendentes').textContent = fmt(pend);
-  $('saldo').textContent = fmtS(saldo);
-  $('saldo').className = 'value ' + (saldo >= 0 ? 'green' : 'red');
+  $('saldo').textContent = fmtS(saldoReal);
+  $('saldo').className = 'value ' + (saldoReal >= 0 ? 'purple' : 'red');
+  $('saldo-prev').textContent = fmtS(saldoPrev);
+  $('saldo-prev').className = 'value ' + (saldoPrev >= 0 ? 'blue' : 'red');
 
-  $('pj-hoje').textContent = fmtS(saldo);
+  $('pj-hoje').textContent = fmtS(saldoReal);
   $('pj-receber').textContent = fmt(arec);
   $('pj-pagar').textContent = fmt(pend);
-  $('pj-fim').textContent = fmtS(prev);
-  $('pj-fim').className = 'value ' + (prev >= 0 ? 'green' : 'red');
+  $('pj-fim').textContent = fmtS(saldoPrev);
+  $('pj-fim').className = 'value ' + (saldoPrev >= 0 ? 'green' : 'red');
+
+  const dif = saldoPrev - saldoReal;
+  $('pj-dif').innerHTML = dif === 0
+    ? '✅ O saldo previsto é igual ao saldo real: não há nada pendente neste mês.'
+    : `Diferença entre previsto e real: <strong class="${dif >= 0 ? 'green' : 'red'}">${dif >= 0 ? '+' : '-'}${fmt(dif)}</strong> (é o que ainda vai entrar menos o que ainda vai sair).`;
+  const invMes = invest.filter(i => !i.pago && i.monthKey === monthKey()).reduce((s, i) => s + i.valor, 0);
+  $('pj-inv').textContent = `Investimentos planejados para este mês: ${fmt(invMes)} (não descontados do saldo previsto).`;
 
   const totalC = S.length, pagasC = S.filter(t => t.pago).length;
   const pct = totalC ? Math.round(pagasC / totalC * 100) : 0;
