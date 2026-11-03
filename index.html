@@ -105,14 +105,6 @@ input:focus,select:focus{border-color:var(--blue)}
 .proximo-venc{background:var(--surface2);border-radius:12px;padding:12px 16px;margin-bottom:16px;display:none;align-items:center;gap:10px;font-size:.92rem}
 .pv-dias{margin-left:auto;font-family:'Orbitron',sans-serif;font-size:.78rem;font-weight:700;padding:4px 12px;border-radius:8px}
 .pv-dias.hoje{background:rgba(239,68,68,.15);color:var(--red)}.pv-dias.amanha{background:rgba(245,158,11,.18);color:var(--yellow)}.pv-dias.normal{background:rgba(59,130,246,.15);color:var(--blue)}
-.cal-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px}
-.cal-day{background:var(--surface);border:1px solid var(--border);border-left:5px solid var(--border);border-radius:12px;padding:14px;cursor:pointer;transition:transform .1s,box-shadow .1s}
-.cal-day:hover{transform:translateY(-2px);box-shadow:var(--shadow)}
-.cal-day.tem-pendente{border-left-color:var(--yellow)}.cal-day.tudo-pago{border-left-color:var(--green)}.cal-day.vencido{border-left-color:var(--red)}.cal-day.hoje{box-shadow:0 0 0 2px var(--blue)}
-.cal-day-num{font-family:'Orbitron',sans-serif;font-size:1.3rem;font-weight:800;line-height:1}
-.cal-day-label{font-size:.8rem;color:var(--text-muted);margin-bottom:8px}
-.cal-chip{font-size:.8rem;border-radius:6px;padding:4px 8px;margin-top:4px;line-height:1.25}
-.cal-chip.entrada{background:rgba(16,185,129,.14);color:var(--green)}.cal-chip.saida-pago{background:rgba(239,68,68,.13);color:var(--red)}.cal-chip.saida-pend{background:rgba(245,158,11,.16);color:var(--yellow)}
 .grp{background:var(--surface2);border-radius:12px;margin-bottom:10px;padding:4px 12px}
 .grp summary{cursor:pointer;display:flex;align-items:center;gap:10px;padding:10px 2px;list-style:none}
 .grp summary::-webkit-details-marker{display:none}
@@ -136,6 +128,21 @@ input:focus,select:focus{border-color:var(--blue)}
 #fb-config-box textarea{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;color:var(--text);font-family:monospace;font-size:.78rem;padding:10px;min-height:140px}
 #btn-connect-firebase{margin-top:12px;width:100%;padding:12px;background:var(--green);color:#fff;border:none;border-radius:10px;font-weight:700;cursor:pointer;font-family:'Rajdhani',sans-serif}
 #fb-err{color:var(--red);font-size:.8rem;margin-top:8px;min-height:16px}
+/* Agenda de vencimentos */
+#cal-grid{display:flex;flex-direction:column;gap:10px}
+.ag-dia{display:flex;gap:16px;background:var(--surface);border:1px solid var(--border);border-left:5px solid var(--border);border-radius:14px;padding:14px 16px;cursor:pointer;transition:transform .1s,box-shadow .1s}
+.ag-dia:hover{transform:translateY(-1px);box-shadow:var(--shadow)}
+.ag-dia.tem-pendente{border-left-color:var(--yellow)}.ag-dia.tudo-pago{border-left-color:var(--green)}.ag-dia.vencido{border-left-color:var(--red)}.ag-dia.hoje{box-shadow:0 0 0 2px var(--blue)}
+.ag-data{min-width:64px;text-align:center}
+.ag-num{font-family:'Orbitron',sans-serif;font-size:1.6rem;font-weight:800;line-height:1}
+.ag-sem{font-size:.85rem;color:var(--text-muted);margin-top:4px}
+.ag-tag{font-size:.72rem;font-weight:700;text-transform:uppercase;margin-top:4px}
+.ag-itens{flex:1;display:flex;flex-direction:column;gap:6px;min-width:0}
+.ag-item{display:flex;align-items:center;gap:12px;background:var(--surface2);border-radius:10px;padding:8px 12px;font-size:.95rem}
+.ag-nome{flex:1;min-width:0;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ag-st{font-size:.8rem;font-weight:600}
+.ag-val{font-family:'Orbitron',sans-serif;font-weight:700;font-size:.85rem;white-space:nowrap;min-width:110px;text-align:right}
+@media(max-width:600px){.ag-dia{flex-direction:column;gap:8px}.ag-data{display:flex;gap:8px;align-items:baseline;text-align:left}.ag-item{flex-wrap:wrap}}
 </style>
 </head>
 <body>
@@ -177,6 +184,7 @@ input:focus,select:focus{border-color:var(--blue)}
     <button class="tab" data-aba="parceladas" onclick="window._aba('parceladas')">🔁 Contas parceladas</button>
     <button class="tab" data-aba="atrasadas" id="tab-atrasadas" onclick="window._aba('atrasadas')">🔴 Contas atrasadas</button>
     <button class="tab" data-aba="projecao" onclick="window._aba('projecao')">📅 Projeção do mês</button>
+    <button class="tab" data-aba="vencimentos" onclick="window._aba('vencimentos')">🗓️ Vencimentos</button>
   </div>
 
   <!-- RECEBIMENTOS -->
@@ -285,11 +293,13 @@ input:focus,select:focus{border-color:var(--blue)}
       <div class="progresso-info"><span id="progresso-left"></span><span id="progresso-right"></span></div>
     </div>
     <div class="proximo-venc" id="proximo-venc"><span>⏰</span><span class="muted">Próximo vencimento:</span><strong id="pv-info"></strong><span class="pv-dias" id="pv-dias"></span></div>
-    <div class="panel">
-      <h2>📅 Vencimentos do mês</h2>
-      <div class="cal-grid" id="cal-grid"></div>
-    </div>
   </div>
+
+  <!-- VENCIMENTOS -->
+  <div class="aba" id="aba-vencimentos"><div class="panel">
+    <h2>🗓️ Vencimentos do mês</h2>
+    <div id="cal-grid"></div>
+  </div></div>
 </main>
 </div>
 
@@ -325,7 +335,7 @@ const fmt = v => 'R$ ' + Math.abs(v).toLocaleString('pt-BR', { minimumFractionDi
 const fmtS = v => (v < 0 ? '-' : '') + fmt(v);
 const formatarData = d => { const [y, m, day] = d.split('-'); return `${day}/${m}/${y}`; };
 const MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-const ABAS = ['recebimentos','contas','investimentos','parceladas','atrasadas','projecao'];
+const ABAS = ['recebimentos','contas','investimentos','parceladas','atrasadas','projecao','vencimentos'];
 
 function showToast(msg) {
   const t = $('toast'); t.textContent = msg; t.classList.add('show');
@@ -575,7 +585,7 @@ function renderAtrasadas() {
   $('tab-atrasadas').textContent = l.length ? `🔴 Contas atrasadas (${l.length})` : '🔴 Contas atrasadas';
 }
 
-// ── Calendário ───────────────────────────────────────────────────────────────
+// ── Vencimentos (agenda por dia) ─────────────────────────────────────────────
 function renderCalendario() {
   const el = $('cal-grid');
   if (!transactions.length) { el.innerHTML = '<div class="empty">Nenhum lançamento este mês.</div>'; return; }
@@ -589,16 +599,17 @@ function renderCalendario() {
     const pend = it.some(t => t.tipo === 'saida' && !t.pago);
     const tudoPago = it.every(t => t.tipo === 'entrada' || t.pago);
     const vencido = pend && esteMes && dia < diaHoje, ehHoje = esteMes && dia === diaHoje;
-    let cls = ehHoje ? 'hoje ' : '';
-    cls += vencido ? 'vencido' : pend ? 'tem-pendente' : tudoPago ? 'tudo-pago' : '';
+    const cls = (ehHoje ? 'hoje ' : '') + (vencido ? 'vencido' : pend ? 'tem-pendente' : tudoPago ? 'tudo-pago' : '');
     const nome = SEM[new Date(currentYear, currentMonth - 1, +dia).getDay()];
-    const chips = it.map(t => {
-      const c = t.tipo === 'entrada' ? 'entrada' : (t.pago ? 'saida-pago' : 'saida-pend');
-      return `<div class="cal-chip ${c}">${t.tipo === 'entrada' ? '⬆' : '⬇'} ${t.desc} · ${fmt(t.valor)}</div>`;
+    const linhas = it.map(t => {
+      const ent = t.tipo === 'entrada', pago = t.pago === true;
+      const st = pago ? (ent ? 'recebido' : 'pago') : (ent ? 'aguardando' : 'pendente');
+      const cor = pago ? (ent ? 'green' : 'red') : 'yellow';
+      return `<div class="ag-item"><span class="ag-nome">${ent ? '⬆' : '⬇'} ${t.desc}</span><span class="ag-st ${cor}">${st}</span><span class="ag-val ${ent ? 'green' : 'red'}">${ent ? '+' : '-'}${fmt(t.valor)}</span></div>`;
     }).join('');
-    return `<div class="cal-day ${cls}" onclick="window._abrirModalDia('${dia}')">
-      <div class="cal-day-num">${+dia}${ehHoje ? ' <span style="font-size:.55rem;color:var(--blue)">HOJE</span>' : ''}</div>
-      <div class="cal-day-label">${nome}${vencido ? ' · <span class="red">vencido</span>' : ''}</div>${chips}</div>`;
+    return `<div class="ag-dia ${cls}" onclick="window._abrirModalDia('${dia}')">
+      <div class="ag-data"><div class="ag-num">${+dia}</div><div class="ag-sem">${nome}</div>${vencido ? '<div class="ag-tag red">vencido</div>' : ehHoje ? '<div class="ag-tag blue">hoje</div>' : ''}</div>
+      <div class="ag-itens">${linhas}</div></div>`;
   }).join('');
 }
 window._abrirModalDia = dia => {
