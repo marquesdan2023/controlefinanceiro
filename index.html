@@ -6,8 +6,8 @@
 <title>Controle Financeiro Pessoal</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Orbitron:wght@400;600;700;900&display=swap');
-:root{--bg:#0f1117;--surface:#1a1d27;--surface2:#222535;--border:#2e3248;--text:#e8eaf0;--text-muted:#8a8fa8;--green:#2dd4a0;--red:#f06a6a;--red-dim:#7a2020;--blue:#5b8cff;--yellow:#f5c842;--purple:#a78bfa;--radius:14px;--shadow:0 4px 18px rgba(0,0,0,.25)}
-:root.light{--bg:#eef2f7;--surface:#ffffff;--surface2:#e6ebf3;--border:#dfe5ee;--text:#1e293b;--text-muted:#64748b;--green:#10b981;--red:#ef4444;--red-dim:#fee2e2;--blue:#3b82f6;--yellow:#f59e0b;--purple:#8b5cf6;--shadow:0 4px 18px rgba(30,41,59,.08)}
+:root{--bg:#0f1117;--surface:#1a1d27;--surface2:#222535;--border:#2e3248;--text:#e8eaf0;--text-muted:#8a8fa8;--green:#2dd4a0;--red:#f06a6a;--red-dim:#7a2020;--blue:#5b8cff;--yellow:#f5c842;--purple:#a78bfa;--obs:#8fb0ff;--obs-bg:rgba(91,140,255,.16);--radius:14px;--shadow:0 4px 18px rgba(0,0,0,.25)}
+:root.light{--bg:#eef2f7;--surface:#ffffff;--surface2:#e6ebf3;--border:#dfe5ee;--text:#1e293b;--text-muted:#64748b;--green:#10b981;--red:#ef4444;--red-dim:#fee2e2;--blue:#3b82f6;--yellow:#f59e0b;--purple:#8b5cf6;--obs:#1e3a8a;--obs-bg:rgba(30,58,138,.10);--shadow:0 4px 18px rgba(30,41,59,.08)}
 html{font-size:18px}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Rajdhani',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:18px}
@@ -31,7 +31,7 @@ main{max-width:1100px;margin:0 auto;padding:14px 20px 40px}
 .summary-card .value{font-family:'Orbitron',sans-serif;font-size:1.05rem;font-weight:800;line-height:1.25;word-break:break-word}
 .summary-card .hint{font-size:.74rem;color:var(--text-muted);margin-top:6px;line-height:1.2}
 .green{color:var(--green)}.red{color:var(--red)}.blue{color:var(--blue)}.yellow{color:var(--yellow)}.muted{color:var(--text-muted)}.purple{color:var(--purple)}
-.obs{color:var(--text-muted);font-weight:500;font-size:.85em}
+.obs{color:var(--obs);font-weight:700;font-size:.95em;background:var(--obs-bg);border-radius:6px;padding:1px 8px}
 .tabs{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0 18px}
 .tab{background:var(--surface2);border:none;color:var(--text);border-radius:12px;padding:11px 20px;font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700;cursor:pointer;transition:transform .1s,background .15s}
 .tab:hover{transform:translateY(-1px);background:var(--border)}
@@ -373,7 +373,7 @@ const fmt = v => 'R$ ' + Math.abs(v).toLocaleString('pt-BR', { minimumFractionDi
 const fmtS = v => (v < 0 ? '-' : '') + fmt(v);
 const formatarData = d => { const [y, m, day] = d.split('-'); return `${day}/${m}/${y}`; };
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
-const obsHtml = t => t.obs ? ` <span class="obs">· ${esc(t.obs)}</span>` : '';
+const obsHtml = t => t.obs ? ` <span class="obs">${esc(t.obs)}</span>` : '';
 const MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
 const ABAS = ['recebimentos','contas','gastos','investimentos','parceladas','atrasadas','projecao','vencimentos'];
 const CATS = ['Alimentação','Mercado','Transporte','Combustível','Lazer','Saúde','Casa','Compras','Outros'];
