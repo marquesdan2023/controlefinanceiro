@@ -117,7 +117,7 @@ input:focus,select:focus{border-color:var(--blue)}
 .overlay.hidden{display:none}
 .box{background:var(--surface);border-radius:18px;padding:24px;width:min(440px,95vw);max-height:85vh;overflow-y:auto;box-shadow:0 20px 50px rgba(0,0,0,.3)}
 .box h3{font-family:'Orbitron',sans-serif;font-size:1.05rem;margin-bottom:12px}
-.box input{margin-bottom:8px}
+.box input,.box select{margin-bottom:8px}
 .modal-btns{display:flex;gap:8px;margin-top:10px}
 .modal-btns button{flex:1;padding:11px;border:none;border-radius:10px;font-family:'Rajdhani',sans-serif;font-size:1rem;font-weight:700;cursor:pointer}
 .dia-item{display:flex;align-items:center;gap:10px;background:var(--surface2);border-radius:10px;padding:12px 14px;margin-bottom:8px;font-size:.92rem}
@@ -144,6 +144,12 @@ input:focus,select:focus{border-color:var(--blue)}
 .ag-st{font-size:.8rem;font-weight:600}
 .ag-val{font-family:'Orbitron',sans-serif;font-weight:700;font-size:.85rem;white-space:nowrap;min-width:110px;text-align:right}
 @media(max-width:600px){.ag-dia{flex-direction:column;gap:8px}.ag-data{display:flex;gap:8px;align-items:baseline;text-align:left}.ag-item{flex-wrap:wrap}}
+/* Gastos */
+.gasto-resumo{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.cat-chip{background:var(--surface2);border-radius:8px;padding:5px 10px;font-size:.82rem;font-weight:600}
+.cat-chip b{font-family:'Orbitron',sans-serif;font-size:.78rem;margin-left:4px;color:var(--red)}
+.cat-tag{background:var(--surface);border-radius:6px;padding:1px 8px;font-size:.78rem;font-weight:600}
+.gasto-total{font-family:'Orbitron',sans-serif;font-size:1.2rem;font-weight:800;margin-bottom:10px}
 </style>
 </head>
 <body>
@@ -174,13 +180,14 @@ input:focus,select:focus{border-color:var(--blue)}
     <div class="summary-card"><div class="label">A receber</div><div class="value yellow" id="total-entradas-pend">R$ 0,00</div><div class="hint">ainda não marcado como recebido</div></div>
     <div class="summary-card"><div class="label">Contas pagas</div><div class="value red" id="total-saidas-pagas">R$ 0,00</div><div class="hint">já saiu da conta</div></div>
     <div class="summary-card"><div class="label">Contas pendentes</div><div class="value yellow" id="total-saidas-pendentes">R$ 0,00</div><div class="hint">ainda a pagar</div></div>
-    <div class="summary-card"><div class="label">Saldo real (em conta)</div><div class="value purple" id="saldo">R$ 0,00</div><div class="hint">só o que já entrou e saiu</div></div>
+    <div class="summary-card"><div class="label">Saldo real (em conta)</div><div class="value purple" id="saldo">R$ 0,00</div><div class="hint">só o que já entrou e saiu (inclui gastos)</div></div>
     <div class="summary-card"><div class="label">Saldo previsto</div><div class="value blue" id="saldo-prev">R$ 0,00</div><div class="hint">se tudo for recebido e pago</div></div>
   </div>
 
   <div class="tabs">
     <button class="tab" data-aba="recebimentos" onclick="window._aba('recebimentos')">⬆️ Recebimentos</button>
     <button class="tab" data-aba="contas" onclick="window._aba('contas')">⬇️ Contas</button>
+    <button class="tab" data-aba="gastos" onclick="window._aba('gastos')">💸 Gastos</button>
     <button class="tab" data-aba="investimentos" onclick="window._aba('investimentos')">📈 Investimentos</button>
     <button class="tab" data-aba="parceladas" onclick="window._aba('parceladas')">🔁 Contas parceladas</button>
     <button class="tab" data-aba="atrasadas" id="tab-atrasadas" onclick="window._aba('atrasadas')">🔴 Contas atrasadas</button>
@@ -239,6 +246,28 @@ input:focus,select:focus{border-color:var(--blue)}
     </div>
   </div></div>
 
+  <!-- GASTOS -->
+  <div class="aba" id="aba-gastos"><div class="two-col">
+    <div class="panel">
+      <h2>💸 Registrar gasto</h2>
+      <label>O que foi?</label><input id="g-desc" type="text" placeholder="Ex: Mercado, Combustível, Lanche...">
+      <label>Valor (R$)</label><input id="g-valor" type="number" step="0.01" min="0" placeholder="0,00">
+      <label>Data do gasto</label><input id="g-data" type="date">
+      <label>Categoria</label><select id="g-cat"></select>
+      <button class="btn btn-saida" onclick="window._addGasto()">+ Registrar gasto</button>
+      <div class="sub" style="margin:10px 0 0">Dica: aperte Enter no campo do valor para salvar rápido.</div>
+    </div>
+    <div class="panel">
+      <h2>💸 Gastos do mês</h2>
+      <div class="gasto-total red" id="g-total">R$ 0,00</div>
+      <div class="gasto-resumo" id="g-resumo"></div>
+      <div class="search-box"><span class="search-icon">🔍</span><input id="g-busca" placeholder="Pesquisar gasto..." oninput="window._renderGastos()"></div>
+      <select id="g-filtro" onchange="window._renderGastos()" style="margin-bottom:8px"></select>
+      <div class="search-count" id="g-count"></div>
+      <div class="tx-list" id="l-gastos"><div class="loading">Carregando...</div></div>
+    </div>
+  </div></div>
+
   <!-- INVESTIMENTOS -->
   <div class="aba" id="aba-investimentos"><div class="two-col">
     <div class="panel">
@@ -281,6 +310,7 @@ input:focus,select:focus{border-color:var(--blue)}
       </div>
       <div class="proj-nota">
         <div id="pj-dif"></div>
+        <div id="pj-gastos" class="muted"></div>
         <div id="pj-inv" class="muted"></div>
       </div>
     </div>
@@ -320,10 +350,11 @@ input:focus,select:focus{border-color:var(--blue)}
 <div id="modal-overlay" class="overlay hidden"><div class="box">
   <h3 id="modal-titulo">✏️ Editar</h3>
   <label>Nome</label><input id="modal-desc" type="text">
-  <label>Observação (opcional)</label><input id="modal-obs" type="text">
+  <div id="modal-obs-wrap"><label>Observação (opcional)</label><input id="modal-obs" type="text"></div>
   <label>Valor (R$)</label><input id="modal-valor" type="number" step="0.01" min="0">
+  <div id="modal-cat-wrap" style="display:none"><label>Categoria</label><select id="modal-cat"></select></div>
   <label id="modal-data-label">Data</label><input id="modal-data" type="date">
-  <label id="modal-data-pgto-label">Data de pagamento (opcional)</label><input id="modal-data-pgto" type="date">
+  <div id="modal-pgto-wrap"><label id="modal-data-pgto-label">Data de pagamento (opcional)</label><input id="modal-data-pgto" type="date"></div>
   <div class="modal-btns">
     <button style="background:var(--surface2);color:var(--text-muted)" onclick="window._fecharModal()">Cancelar</button>
     <button style="background:var(--blue);color:#fff" onclick="window._salvarEdicao()">Salvar</button>
@@ -344,7 +375,8 @@ const formatarData = d => { const [y, m, day] = d.split('-'); return `${day}/${m
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 const obsHtml = t => t.obs ? ` <span class="obs">· ${esc(t.obs)}</span>` : '';
 const MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-const ABAS = ['recebimentos','contas','investimentos','parceladas','atrasadas','projecao','vencimentos'];
+const ABAS = ['recebimentos','contas','gastos','investimentos','parceladas','atrasadas','projecao','vencimentos'];
+const CATS = ['Alimentação','Mercado','Transporte','Combustível','Lazer','Saúde','Casa','Compras','Outros'];
 
 function showToast(msg) {
   const t = $('toast'); t.textContent = msg; t.classList.add('show');
@@ -352,7 +384,7 @@ function showToast(msg) {
 }
 
 let db, currentYear, currentMonth, caixaInicial = 0;
-let transactions = [], allSaidas = [], invest = [], byId = {};
+let transactions = [], gastos = [], allSaidas = [], invest = [], byId = {};
 const F = { entrada: { f: 'todos', o: 'data' }, saida: { f: 'todos', o: 'data' } };
 
 const monthKey = () => `${currentYear}-${String(currentMonth).padStart(2, '0')}`;
@@ -426,6 +458,11 @@ function popularSelects() {
     $(id).innerHTML = o;
   });
   ['s', 'e'].forEach(p => { $('ini-' + p).value = `${ano}-${mes}`; $('fim-' + p).value = `${ano}-12`; });
+  const opts = CATS.map(c => `<option value="${c}">${c}</option>`).join('');
+  $('g-cat').innerHTML = opts;
+  $('modal-cat').innerHTML = opts;
+  $('g-filtro').innerHTML = '<option value="">Todas as categorias</option>' + opts;
+  $('g-data').value = getDatasReferencia().dataHoje;
 }
 
 // ── Adicionar recebimento / conta ────────────────────────────────────────────
@@ -460,6 +497,23 @@ window._add = async t => {
   } catch (e) { showToast('❌ Erro: ' + e.message); }
 };
 
+// ── Adicionar gasto ──────────────────────────────────────────────────────────
+window._addGasto = async () => {
+  const desc = $('g-desc').value.trim(), valor = parseFloat($('g-valor').value);
+  const data = $('g-data').value, cat = $('g-cat').value;
+  if (!desc) { showToast('⚠️ Informe o que foi'); return; }
+  if (!valor || valor <= 0) { showToast('⚠️ Informe um valor válido'); return; }
+  if (!data) { showToast('⚠️ Informe a data'); return; }
+  try {
+    await addDoc(collection(db, 'financeiro'), { desc, valor, cat, data, tipo: 'gasto', pago: true, monthKey: data.substring(0, 7), criadoEm: Date.now() });
+    showToast('✅ Gasto registrado');
+    $('g-desc').value = ''; $('g-valor').value = '';
+    $('g-desc').focus();
+    loadData();
+  } catch (e) { showToast('❌ Erro: ' + e.message); }
+};
+['g-desc', 'g-valor'].forEach(id => $(id).addEventListener('keydown', e => { if (e.key === 'Enter') window._addGasto(); }));
+
 window._addInv = async () => {
   const desc = $('inv-desc').value.trim(), valor = parseFloat($('inv-valor').value), data = $('inv-data').value;
   if (!desc) { showToast('⚠️ Informe o nome do investimento'); return; }
@@ -493,11 +547,13 @@ async function loadData() {
     getDocs(query(c, where('tipo', '==', 'investimento')))
   ]);
   const lista = s => { const l = []; s.forEach(d => l.push({ id: d.id, ...d.data() })); return l; };
-  transactions = lista(s1).filter(t => t.tipo === 'entrada' || t.tipo === 'saida').sort((a, b) => a.data.localeCompare(b.data));
+  const mes = lista(s1);
+  transactions = mes.filter(t => t.tipo === 'entrada' || t.tipo === 'saida').sort((a, b) => a.data.localeCompare(b.data));
+  gastos = mes.filter(t => t.tipo === 'gasto').sort((a, b) => b.data.localeCompare(a.data) || (b.criadoEm || 0) - (a.criadoEm || 0));
   allSaidas = lista(s2).sort((a, b) => a.data.localeCompare(b.data));
   invest = lista(s3).sort((a, b) => a.data.localeCompare(b.data));
   byId = {};
-  [...allSaidas, ...invest, ...transactions].forEach(t => byId[t.id] = t);
+  [...allSaidas, ...invest, ...transactions, ...gastos].forEach(t => byId[t.id] = t);
   renderAll();
 }
 
@@ -526,6 +582,33 @@ function linha(t) {
     <button class="tx-del" onclick="window._del('${t.id}')">✕</button>
   </div>`;
 }
+
+function linhaGasto(t) {
+  return `<div class="tx-item">
+    <div class="tx-info"><div class="tx-desc">${esc(t.desc)}</div>
+      <div class="tx-meta">${formatarData(t.data)} · <span class="cat-tag">${esc(t.cat || 'Outros')}</span></div></div>
+    <div class="tx-value red">-${fmt(t.valor)}</div>
+    <button class="tx-edit" onclick="window._abrirModal('${t.id}')">✏️</button>
+    <button class="tx-del" onclick="window._del('${t.id}')">✕</button>
+  </div>`;
+}
+
+// ── Gastos ───────────────────────────────────────────────────────────────────
+window._renderGastos = () => {
+  const total = gastos.reduce((s, t) => s + t.valor, 0);
+  $('g-total').textContent = fmt(total);
+  const porCat = {};
+  gastos.forEach(t => { const c = t.cat || 'Outros'; porCat[c] = (porCat[c] || 0) + t.valor; });
+  $('g-resumo').innerHTML = Object.entries(porCat).sort((a, b) => b[1] - a[1])
+    .map(([c, v]) => `<span class="cat-chip">${esc(c)}<b>${fmt(v)}</b></span>`).join('')
+    || '<span class="muted" style="font-size:.9rem">Nenhum gasto neste mês.</span>';
+  const q = $('g-busca').value.toLowerCase().trim(), cat = $('g-filtro').value;
+  let l = [...gastos];
+  if (cat) l = l.filter(t => (t.cat || 'Outros') === cat);
+  if (q) l = l.filter(t => t.desc.toLowerCase().includes(q));
+  $('g-count').textContent = (q || cat) ? `${l.length} de ${gastos.length} gasto(s) · ${fmt(l.reduce((s, t) => s + t.valor, 0))}` : '';
+  $('l-gastos').innerHTML = l.length ? l.map(linhaGasto).join('') : '<div class="empty">Nenhum gasto encontrado.</div>';
+};
 
 // ── Listas de recebimentos e contas ──────────────────────────────────────────
 function renderLista(t) {
@@ -645,7 +728,8 @@ function renderAll() {
   const E = transactions.filter(t => t.tipo === 'entrada'), S = transactions.filter(t => t.tipo === 'saida');
   const sum = (l, p) => l.filter(t => !!t.pago === p).reduce((s, t) => s + t.valor, 0);
   const rec = sum(E, true), arec = sum(E, false), pag = sum(S, true), pend = sum(S, false);
-  const saldoReal = caixaInicial + rec - pag;
+  const gas = gastos.reduce((s, t) => s + t.valor, 0);
+  const saldoReal = caixaInicial + rec - pag - gas;
   const saldoPrev = saldoReal + arec - pend;
 
   $('total-caixa').textContent = fmt(caixaInicial);
@@ -668,6 +752,7 @@ function renderAll() {
   $('pj-dif').innerHTML = dif === 0
     ? '✅ O saldo previsto é igual ao saldo real: não há nada pendente neste mês.'
     : `Diferença entre previsto e real: <strong class="${dif >= 0 ? 'green' : 'red'}">${dif >= 0 ? '+' : '-'}${fmt(dif)}</strong> (é o que ainda vai entrar menos o que ainda vai sair).`;
+  $('pj-gastos').textContent = `Gastos do mês: ${fmt(gas)} (já descontados do saldo real e do previsto).`;
   const invMes = invest.filter(i => !i.pago && i.monthKey === monthKey()).reduce((s, i) => s + i.valor, 0);
   $('pj-inv').textContent = `Investimentos planejados para este mês: ${fmt(invMes)} (não descontados do saldo previsto).`;
   $('pj-lista').innerHTML = E.length ? E.map(linha).join('') : '<div class="empty">Nenhum recebimento neste mês.</div>';
@@ -692,7 +777,7 @@ function renderAll() {
     else { d.textContent = `em ${diasEntre(dataHoje, prox.data)} dias`; d.className = 'pv-dias normal'; }
   } else pv.style.display = 'none';
 
-  renderLista('entrada'); renderLista('saida');
+  renderLista('entrada'); renderLista('saida'); window._renderGastos();
   renderInvest(); renderParceladas(); renderAtrasadas(); renderCalendario();
 }
 
@@ -713,10 +798,14 @@ let _editandoId = null;
 window._abrirModal = id => {
   const t = byId[id]; if (!t) return;
   _editandoId = id;
-  const ent = t.tipo === 'entrada', inv = t.tipo === 'investimento';
-  $('modal-titulo').textContent = ent ? '✏️ Editar recebimento' : inv ? '✏️ Editar investimento' : '✏️ Editar conta';
-  $('modal-data-label').textContent = ent || inv ? 'Data prevista' : 'Data de vencimento';
+  const ent = t.tipo === 'entrada', inv = t.tipo === 'investimento', gas = t.tipo === 'gasto';
+  $('modal-titulo').textContent = ent ? '✏️ Editar recebimento' : inv ? '✏️ Editar investimento' : gas ? '✏️ Editar gasto' : '✏️ Editar conta';
+  $('modal-data-label').textContent = gas ? 'Data do gasto' : (ent || inv ? 'Data prevista' : 'Data de vencimento');
   $('modal-data-pgto-label').textContent = ent ? 'Data de recebimento (opcional)' : inv ? 'Data em que investiu (opcional)' : 'Data de pagamento (opcional)';
+  $('modal-cat-wrap').style.display = gas ? 'block' : 'none';
+  $('modal-pgto-wrap').style.display = gas ? 'none' : 'block';
+  $('modal-obs-wrap').style.display = gas ? 'none' : 'block';
+  if (gas) $('modal-cat').value = t.cat || 'Outros';
   $('modal-desc').value = t.desc; $('modal-obs').value = t.obs || ''; $('modal-valor').value = t.valor;
   $('modal-data').value = t.data; $('modal-data-pgto').value = t.dataPagamento || '';
   $('modal-overlay').classList.remove('hidden');
@@ -724,13 +813,16 @@ window._abrirModal = id => {
 window._fecharModal = () => { _editandoId = null; $('modal-overlay').classList.add('hidden'); };
 window._salvarEdicao = async () => {
   if (!_editandoId) return;
+  const t = byId[_editandoId], gas = t && t.tipo === 'gasto';
   const desc = $('modal-desc').value.trim(), valor = parseFloat($('modal-valor').value), data = $('modal-data').value;
-  const dataPagamento = $('modal-data-pgto').value || null;
   if (!desc) { showToast('⚠️ Informe o nome'); return; }
   if (!valor || valor <= 0) { showToast('⚠️ Informe um valor válido'); return; }
   if (!data) { showToast('⚠️ Informe a data'); return; }
+  const upd = gas
+    ? { desc, valor, data, cat: $('modal-cat').value, monthKey: data.substring(0, 7) }
+    : { desc, obs: $('modal-obs').value.trim(), valor, data, monthKey: data.substring(0, 7), dataPagamento: $('modal-data-pgto').value || null };
   try {
-    await updateDoc(doc(db, 'financeiro', _editandoId), { desc, obs: $('modal-obs').value.trim(), valor, data, monthKey: data.substring(0, 7), dataPagamento });
+    await updateDoc(doc(db, 'financeiro', _editandoId), upd);
     showToast('✅ Atualizado!'); window._fecharModal(); loadData();
   } catch (e) { showToast('❌ Erro ao salvar: ' + e.message); }
 };
