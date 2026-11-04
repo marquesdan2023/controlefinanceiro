@@ -285,18 +285,47 @@ input:focus,select:focus{border-color:var(--blue)}
   </div></div>
 
   <!-- PARCELADAS -->
-  <div class="aba" id="aba-parceladas"><div class="panel">
-    <h2>🔁 Contas parceladas (repetem todo mês)</h2>
-    <div class="sub">Clique em uma conta para ver as parcelas mês a mês.</div>
-    <div id="l-parceladas"><div class="loading">Carregando...</div></div>
-  </div></div>
+  <div class="aba" id="aba-parceladas">
+    <div class="panel">
+      <h2>🔁 Registrar conta parcelada</h2>
+      <div class="form-row">
+        <div><label>Nome da conta</label><input id="p-desc" type="text" placeholder="Ex: Parcelamento MEI"></div>
+        <div><label>Valor da parcela (R$)</label><input id="p-valor" type="number" step="0.01" min="0" placeholder="0,00"></div>
+      </div>
+      <div class="form-row">
+        <div><label>Dia de vencimento</label><input id="p-dia" type="number" min="1" max="31" placeholder="Ex: 10"></div>
+        <div><label>Quantidade de parcelas</label><input id="p-qtd" type="number" min="2" max="60" placeholder="Ex: 12"></div>
+      </div>
+      <div class="form-row">
+        <div><label>Primeira parcela em</label><select id="p-ini"></select></div>
+        <div></div>
+      </div>
+      <button class="btn btn-saida" onclick="window._addParcelada()">+ Registrar conta parcelada</button>
+    </div>
+    <div class="panel">
+      <h2>🔁 Contas parceladas (repetem todo mês)</h2>
+      <div class="sub">Clique em uma conta para ver as parcelas mês a mês.</div>
+      <div id="l-parceladas"><div class="loading">Carregando...</div></div>
+    </div>
+  </div>
 
   <!-- ATRASADAS -->
-  <div class="aba" id="aba-atrasadas"><div class="panel">
-    <h2>🔴 Contas atrasadas (todos os meses)</h2>
-    <div class="sub" id="atr-resumo"></div>
-    <div class="tx-list" id="l-atrasadas" style="max-height:none"><div class="loading">Carregando...</div></div>
-  </div></div>
+  <div class="aba" id="aba-atrasadas">
+    <div class="panel">
+      <h2>🔴 Registrar conta já vencida</h2>
+      <div class="form-row">
+        <div><label>Nome da conta</label><input id="a-desc" type="text" placeholder="Ex: Luz de setembro"></div>
+        <div><label>Valor (R$)</label><input id="a-valor" type="number" step="0.01" min="0" placeholder="0,00"></div>
+      </div>
+      <label>Data de vencimento</label><input id="a-data" type="date">
+      <button class="btn btn-saida" onclick="window._addAtrasada()">+ Registrar conta</button>
+    </div>
+    <div class="panel">
+      <h2>🔴 Contas atrasadas (todos os meses)</h2>
+      <div class="sub" id="atr-resumo"></div>
+      <div class="tx-list" id="l-atrasadas" style="max-height:none"><div class="loading">Carregando...</div></div>
+    </div>
+  </div>
 
   <!-- PROJEÇÃO -->
   <div class="aba" id="aba-projecao">
@@ -463,6 +492,8 @@ function popularSelects() {
   $('modal-cat').innerHTML = opts;
   $('g-filtro').innerHTML = '<option value="">Todas as categorias</option>' + opts;
   $('g-data').value = getDatasReferencia().dataHoje;
+  $('p-ini').innerHTML = $('ini-s').innerHTML;
+  $('p-ini').value = $('ini-s').value;
 }
 
 // ── Adicionar recebimento / conta ────────────────────────────────────────────
@@ -493,6 +524,47 @@ window._add = async t => {
     showToast(n > 1 ? `✅ ${n} lançamentos criados!` : '✅ Lançamento registrado');
     $(`inp-${p}-desc`).value = ''; $(`inp-${p}-valor`).value = '';
     if (t === 'entrada') $('inp-e-obs').value = '';
+    loadData();
+  } catch (e) { showToast('❌ Erro: ' + e.message); }
+};
+
+// ── Adicionar conta parcelada (aba Contas parceladas) ────────────────────────
+window._addParcelada = async () => {
+  const desc = $('p-desc').value.trim(), valor = parseFloat($('p-valor').value);
+  const dia = parseInt($('p-dia').value), qtd = parseInt($('p-qtd').value), ini = $('p-ini').value;
+  if (!desc) { showToast('⚠️ Informe o nome'); return; }
+  if (!valor || valor <= 0) { showToast('⚠️ Informe um valor válido'); return; }
+  if (!dia || dia < 1 || dia > 31) { showToast('⚠️ Informe o dia'); return; }
+  if (!qtd || qtd < 2) { showToast('⚠️ Informe 2 parcelas ou mais'); return; }
+  try {
+    const [y, m] = ini.split('-').map(Number);
+    const fimData = new Date(y, m - 1 + qtd - 1, 1);
+    const fim = `${fimData.getFullYear()}-${String(fimData.getMonth() + 1).padStart(2, '0')}`;
+    const datas = gerarDatas(ini, fim, dia);
+    for (let i = 0; i < datas.length; i++) {
+      await addDoc(collection(db, 'financeiro'), {
+        desc: `${desc} (${i + 1}/${datas.length})`, valor, obs: '', data: datas[i],
+        tipo: 'saida', pago: false, monthKey: datas[i].substring(0, 7), criadoEm: Date.now()
+      });
+    }
+    showToast(`✅ ${datas.length} parcelas criadas!`);
+    $('p-desc').value = ''; $('p-valor').value = ''; $('p-qtd').value = '';
+    loadData();
+  } catch (e) { showToast('❌ Erro: ' + e.message); }
+};
+
+// ── Adicionar conta já vencida (aba Contas atrasadas) ────────────────────────
+window._addAtrasada = async () => {
+  const desc = $('a-desc').value.trim(), valor = parseFloat($('a-valor').value), data = $('a-data').value;
+  if (!desc) { showToast('⚠️ Informe o nome'); return; }
+  if (!valor || valor <= 0) { showToast('⚠️ Informe um valor válido'); return; }
+  if (!data) { showToast('⚠️ Informe a data de vencimento'); return; }
+  try {
+    await addDoc(collection(db, 'financeiro'), {
+      desc, valor, obs: '', data, tipo: 'saida', pago: false, monthKey: data.substring(0, 7), criadoEm: Date.now()
+    });
+    showToast('✅ Conta registrada');
+    $('a-desc').value = ''; $('a-valor').value = ''; $('a-data').value = '';
     loadData();
   } catch (e) { showToast('❌ Erro: ' + e.message); }
 };
