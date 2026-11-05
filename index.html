@@ -437,6 +437,7 @@ input:focus,select:focus{border-color:var(--blue)}
   <label>Valor (R$)</label><input id="modal-valor" type="number" step="0.01" min="0">
   <div id="modal-cat-wrap" style="display:none"><label>Categoria</label><select id="modal-cat"></select></div>
   <label id="modal-data-label">Data</label><input id="modal-data" type="date">
+  <div id="modal-prev-wrap" style="display:none"><label>📌 Pretendo pagar em (opcional)</label><input id="modal-prev" type="date"></div>
   <div id="modal-pgto-wrap"><label id="modal-data-pgto-label">Data de pagamento (opcional)</label><input id="modal-data-pgto" type="date"></div>
   <div class="modal-btns">
     <button style="background:var(--surface2);color:var(--text-muted)" onclick="window._fecharModal()">Cancelar</button>
@@ -665,6 +666,7 @@ window._togglePago = async (id, atual) => {
 };
 
 // ── Carregar dados ───────────────────────────────────────────────────────────
+// Contas com "dataPrevista" aparecem no mês dessa data (e deixam de somar no mês original).
 async function loadData() {
   await loadCaixa();
   const c = collection(db, 'financeiro');
@@ -674,13 +676,17 @@ async function loadData() {
     getDocs(query(c, where('tipo', '==', 'investimento')))
   ]);
   const lista = s => { const l = []; s.forEach(d => l.push({ id: d.id, ...d.data() })); return l; };
+  const mk = monthKey();
   const mes = lista(s1);
-  transactions = mes.filter(t => t.tipo === 'entrada' || t.tipo === 'saida').sort((a, b) => a.data.localeCompare(b.data));
-  gastos = mes.filter(t => t.tipo === 'gasto').sort((a, b) => b.data.localeCompare(a.data) || (b.criadoEm || 0) - (a.criadoEm || 0));
   allSaidas = lista(s2).sort((a, b) => a.data.localeCompare(b.data));
   invest = lista(s3).sort((a, b) => a.data.localeCompare(b.data));
+  const saidasMes = allSaidas
+    .filter(t => (t.dataPrevista || t.data).substring(0, 7) === mk)
+    .map(t => t.dataPrevista ? { ...t, venceOrig: t.data, data: t.dataPrevista } : t);
+  transactions = [...mes.filter(t => t.tipo === 'entrada'), ...saidasMes].sort((a, b) => a.data.localeCompare(b.data));
+  gastos = mes.filter(t => t.tipo === 'gasto').sort((a, b) => b.data.localeCompare(a.data) || (b.criadoEm || 0) - (a.criadoEm || 0));
   byId = {};
-  [...allSaidas, ...invest, ...transactions, ...gastos].forEach(t => byId[t.id] = t);
+  [...mes, ...allSaidas, ...invest].forEach(t => byId[t.id] = t);
   renderAll();
 }
 
@@ -700,10 +706,12 @@ function linha(t) {
   const corVal = pago ? (ent || inv ? 'green' : 'red') : 'muted';
   const sinal = ent ? '+' : inv ? '' : '-';
   const pgto = t.dataPagamento ? ` · <span class="blue">pago em ${formatarData(t.dataPagamento)}</span>` : '';
+  const orig = t.venceOrig ? ` · <span class="red">venceu ${formatarData(t.venceOrig)}</span>` : '';
+  const prev = (!t.venceOrig && t.dataPrevista && !pago) ? ` · <span class="blue">📌 pagar em ${formatarData(t.dataPrevista)}</span>` : '';
   return `<div class="tx-item ${cls}">
     <button class="tx-check ${pago ? 'pago' : ''}" onclick="window._togglePago('${t.id}',${pago})">${pago ? '✓' : ''}</button>
     <div class="tx-info"><div class="tx-desc">${t.desc}${obsHtml(t)}</div>
-      <div class="tx-meta">${verbo} ${formatarData(t.data)}${pgto} · <span class="${corSt}">${st}</span>${badge}</div></div>
+      <div class="tx-meta">${verbo} ${formatarData(t.data)}${orig}${prev}${pgto} · <span class="${corSt}">${st}</span>${badge}</div></div>
     <div class="tx-value ${corVal}">${sinal}${fmt(t.valor)}</div>
     <button class="tx-edit" onclick="window._abrirModal('${t.id}')">✏️</button>
     <button class="tx-del" onclick="window._del('${t.id}')">✕</button>
@@ -788,7 +796,7 @@ function renderResumoDia() {
     else if (d === dataHoje) tag = '<span class="rd-tag red">HOJE</span>';
     else if (d === dataAmanha) tag = '<span class="rd-tag yellow">AMANHÃ</span>';
     const cls = (pend === 0 ? 'ok' : atras ? 'atr' : '') + (d === dataHoje ? ' hoje' : '');
-    const chips = it.map(t => `<span class="rd-chip ${t.pago ? 'pago' : ''}">${esc(t.desc)} · ${fmt(t.valor)}</span>`).join('');
+    const chips = it.map(t => `<span class="rd-chip ${t.pago ? 'pago' : ''}">${esc(t.desc)} · ${fmt(t.valor)}${t.venceOrig ? ' (venceu ' + formatarData(t.venceOrig).slice(0, 5) + ')' : ''}</span>`).join('');
     return `<div class="rd-dia ${cls}">
       <div class="rd-data"><b>${+dia}</b><span>${sem}</span></div>
       <div class="rd-itens">${chips}</div>
@@ -863,7 +871,7 @@ function renderCalendario() {
       const ent = t.tipo === 'entrada', pago = t.pago === true;
       const st = pago ? (ent ? 'recebido' : 'pago') : (ent ? 'aguardando' : 'pendente');
       const cor = pago ? (ent ? 'green' : 'red') : 'yellow';
-      return `<div class="ag-item"><span class="ag-nome">${ent ? '⬆' : '⬇'} ${t.desc}${obsHtml(t)}</span><span class="ag-st ${cor}">${st}</span><span class="ag-val ${ent ? 'green' : 'red'}">${ent ? '+' : '-'}${fmt(t.valor)}</span></div>`;
+      return `<div class="ag-item"><span class="ag-nome">${ent ? '⬆' : '⬇'} ${t.desc}${obsHtml(t)}${t.venceOrig ? ' <span class="red">(venceu ' + formatarData(t.venceOrig).slice(0, 5) + ')</span>' : ''}</span><span class="ag-st ${cor}">${st}</span><span class="ag-val ${ent ? 'green' : 'red'}">${ent ? '+' : '-'}${fmt(t.valor)}</span></div>`;
     }).join('');
     return `<div class="ag-dia ${cls}" onclick="window._abrirModalDia('${dia}')">
       <div class="ag-data"><div class="ag-num">${+dia}</div><div class="ag-sem">${nome}</div>${vencido ? '<div class="ag-tag red">vencido</div>' : ehHoje ? '<div class="ag-tag blue">hoje</div>' : ''}</div>
@@ -879,7 +887,7 @@ window._abrirModalDia = dia => {
     const ent = t.tipo === 'entrada', pago = t.pago === true;
     return `<div class="dia-item"><div>${ent ? '⬆️' : '⬇️'}</div>
       <div class="tx-info"><div class="tx-desc">${t.desc}${obsHtml(t)}</div>
-      <div class="tx-meta">${ent ? 'Recebimento' : 'Conta'} · ${pago ? (ent ? 'recebido' : 'pago') : (ent ? 'aguardando' : 'pendente')}</div></div>
+      <div class="tx-meta">${ent ? 'Recebimento' : 'Conta'} · ${pago ? (ent ? 'recebido' : 'pago') : (ent ? 'aguardando' : 'pendente')}${t.venceOrig ? ' · venceu ' + formatarData(t.venceOrig) : ''}</div></div>
       <div class="tx-value ${ent ? 'green' : (pago ? 'red' : 'muted')}">${ent ? '+' : '-'}${fmt(t.valor)}</div></div>`;
   }).join('');
   $('modal-dia-overlay').classList.remove('hidden');
@@ -1038,16 +1046,18 @@ let _editandoId = null;
 window._abrirModal = id => {
   const t = byId[id]; if (!t) return;
   _editandoId = id;
-  const ent = t.tipo === 'entrada', inv = t.tipo === 'investimento', gas = t.tipo === 'gasto';
+  const ent = t.tipo === 'entrada', inv = t.tipo === 'investimento', gas = t.tipo === 'gasto', sai = t.tipo === 'saida';
   $('modal-titulo').textContent = ent ? '✏️ Editar recebimento' : inv ? '✏️ Editar investimento' : gas ? '✏️ Editar gasto' : '✏️ Editar conta';
-  $('modal-data-label').textContent = gas ? 'Data do gasto' : (ent || inv ? 'Data prevista' : 'Data de vencimento');
+  $('modal-data-label').textContent = gas ? 'Data do gasto' : (ent || inv ? 'Data prevista' : 'Data de vencimento (original)');
   $('modal-data-pgto-label').textContent = ent ? 'Data de recebimento (opcional)' : inv ? 'Data em que investiu (opcional)' : 'Data de pagamento (opcional)';
   $('modal-cat-wrap').style.display = gas ? 'block' : 'none';
   $('modal-pgto-wrap').style.display = gas ? 'none' : 'block';
   $('modal-obs-wrap').style.display = gas ? 'none' : 'block';
+  $('modal-prev-wrap').style.display = sai ? 'block' : 'none';
   if (gas) $('modal-cat').value = t.cat || 'Outros';
   $('modal-desc').value = t.desc; $('modal-obs').value = t.obs || ''; $('modal-valor').value = t.valor;
   $('modal-data').value = t.data; $('modal-data-pgto').value = t.dataPagamento || '';
+  $('modal-prev').value = t.dataPrevista || '';
   $('modal-overlay').classList.remove('hidden');
 };
 window._fecharModal = () => { _editandoId = null; $('modal-overlay').classList.add('hidden'); };
@@ -1061,6 +1071,7 @@ window._salvarEdicao = async () => {
   const upd = gas
     ? { desc, valor, data, cat: $('modal-cat').value, monthKey: data.substring(0, 7) }
     : { desc, obs: $('modal-obs').value.trim(), valor, data, monthKey: data.substring(0, 7), dataPagamento: $('modal-data-pgto').value || null };
+  if (t && t.tipo === 'saida') upd.dataPrevista = $('modal-prev').value || null;
   try {
     await updateDoc(doc(db, 'financeiro', _editandoId), upd);
     showToast('✅ Atualizado!'); window._fecharModal(); loadData();
