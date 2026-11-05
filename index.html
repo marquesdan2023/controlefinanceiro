@@ -18,7 +18,7 @@ header h1{font-family:'Orbitron',sans-serif;font-size:1.5rem;font-weight:700;let
 .month-nav button:hover,#btn-tema:hover{border-color:var(--blue)}
 .month-nav span{font-weight:700;min-width:140px;text-align:center}
 main{max-width:1100px;margin:0 auto;padding:14px 20px 40px}
-.summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:14px;margin-bottom:18px}
+.summary-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
 .summary-card{background:var(--surface);border:1px solid var(--border);border-left:5px solid var(--blue);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow)}
 .summary-card:nth-child(1){border-left-color:var(--blue)}
 .summary-card:nth-child(2){border-left-color:var(--green)}
@@ -38,6 +38,7 @@ main{max-width:1100px;margin:0 auto;padding:14px 20px 40px}
 .tab.ativo{background:var(--blue);color:#fff;box-shadow:0 6px 16px rgba(59,130,246,.35)}
 .aba{display:none}
 .aba.ativo{display:block;background:var(--surface);border:1px solid var(--border);border-radius:20px;padding:24px;box-shadow:var(--shadow)}
+#aba-resumo.ativo{background:transparent;border:none;box-shadow:none;padding:0}
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
 @media(max-width:760px){.two-col{grid-template-columns:1fr}.aba.ativo{padding:16px}}
 .panel{background:transparent;border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:16px}
@@ -174,17 +175,8 @@ input:focus,select:focus{border-color:var(--blue)}
 </header>
 
 <main>
-  <div class="summary-grid">
-    <div class="summary-card"><div class="label">Caixa inicial</div><div class="value green" id="total-caixa">R$ 0,00</div><div class="hint">valor com que o mês começou</div></div>
-    <div class="summary-card"><div class="label">Total recebido</div><div class="value green" id="total-entradas">R$ 0,00</div><div class="hint">já caiu na conta</div></div>
-    <div class="summary-card"><div class="label">A receber</div><div class="value yellow" id="total-entradas-pend">R$ 0,00</div><div class="hint">ainda não marcado como recebido</div></div>
-    <div class="summary-card"><div class="label">Contas pagas</div><div class="value red" id="total-saidas-pagas">R$ 0,00</div><div class="hint">já saiu da conta</div></div>
-    <div class="summary-card"><div class="label">Contas pendentes</div><div class="value yellow" id="total-saidas-pendentes">R$ 0,00</div><div class="hint">ainda a pagar</div></div>
-    <div class="summary-card"><div class="label">Saldo real (em conta)</div><div class="value purple" id="saldo">R$ 0,00</div><div class="hint">só o que já entrou e saiu (inclui gastos)</div></div>
-    <div class="summary-card"><div class="label">Saldo previsto</div><div class="value blue" id="saldo-prev">R$ 0,00</div><div class="hint">se tudo for recebido e pago</div></div>
-  </div>
-
   <div class="tabs">
+    <button class="tab" data-aba="resumo" onclick="window._aba('resumo')">📊 Resumo</button>
     <button class="tab" data-aba="recebimentos" onclick="window._aba('recebimentos')">⬆️ Recebimentos</button>
     <button class="tab" data-aba="contas" onclick="window._aba('contas')">⬇️ Contas</button>
     <button class="tab" data-aba="gastos" onclick="window._aba('gastos')">💸 Gastos</button>
@@ -193,6 +185,19 @@ input:focus,select:focus{border-color:var(--blue)}
     <button class="tab" data-aba="atrasadas" id="tab-atrasadas" onclick="window._aba('atrasadas')">🔴 Contas atrasadas</button>
     <button class="tab" data-aba="projecao" onclick="window._aba('projecao')">📅 Projeção do mês</button>
     <button class="tab" data-aba="vencimentos" onclick="window._aba('vencimentos')">🗓️ Vencimentos</button>
+  </div>
+
+  <!-- RESUMO -->
+  <div class="aba" id="aba-resumo">
+    <div class="summary-grid">
+      <div class="summary-card"><div class="label">Caixa inicial</div><div class="value green" id="total-caixa">R$ 0,00</div><div class="hint">valor com que o mês começou</div></div>
+      <div class="summary-card"><div class="label">Total recebido</div><div class="value green" id="total-entradas">R$ 0,00</div><div class="hint">já caiu na conta</div></div>
+      <div class="summary-card"><div class="label">A receber</div><div class="value yellow" id="total-entradas-pend">R$ 0,00</div><div class="hint">ainda não marcado como recebido</div></div>
+      <div class="summary-card"><div class="label">Contas pagas</div><div class="value red" id="total-saidas-pagas">R$ 0,00</div><div class="hint">já saiu da conta</div></div>
+      <div class="summary-card"><div class="label">Contas pendentes</div><div class="value yellow" id="total-saidas-pendentes">R$ 0,00</div><div class="hint">ainda a pagar</div></div>
+      <div class="summary-card"><div class="label">Saldo real (em conta)</div><div class="value purple" id="saldo">R$ 0,00</div><div class="hint">só o que já entrou e saiu (inclui gastos)</div></div>
+      <div class="summary-card"><div class="label">Saldo previsto</div><div class="value blue" id="saldo-prev">R$ 0,00</div><div class="hint">se tudo for recebido e pago</div></div>
+    </div>
   </div>
 
   <!-- RECEBIMENTOS -->
@@ -404,7 +409,7 @@ const formatarData = d => { const [y, m, day] = d.split('-'); return `${day}/${m
 const esc = s => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 const obsHtml = t => t.obs ? ` <span class="obs">${esc(t.obs)}</span>` : '';
 const MESES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
-const ABAS = ['recebimentos','contas','gastos','investimentos','parceladas','atrasadas','projecao','vencimentos'];
+const ABAS = ['resumo','recebimentos','contas','gastos','investimentos','parceladas','atrasadas','projecao','vencimentos'];
 const CATS = ['Alimentação','Mercado','Transporte','Combustível','Lazer','Saúde','Casa','Compras','Outros'];
 
 function showToast(msg) {
@@ -922,7 +927,7 @@ function iniciarApp() {
   const h = new Date();
   currentYear = h.getFullYear(); currentMonth = h.getMonth() + 1;
   popularSelects(); updateMonthLabel();
-  let aba = 'contas';
+  let aba = 'resumo';
   try { const s = localStorage.getItem('aba_financeiro'); if (ABAS.includes(s)) aba = s; } catch {}
   window._aba(aba);
   loadData();
