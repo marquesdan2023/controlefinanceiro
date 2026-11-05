@@ -164,9 +164,9 @@ input:focus,select:focus{border-color:var(--blue)}
 .res-vazio{color:var(--text-muted);font-size:.9rem;padding:8px 0}
 .res-prog{background:var(--surface2);border-radius:99px;height:8px;overflow:hidden;margin:6px 0 2px}
 .res-prog div{height:100%;border-radius:99px;background:var(--green)}
-/* Resumo por dia (aba Contas) */
+/* Resumo por dia (abas Contas e Recebimentos) */
 .rd-info{font-size:.85rem;color:var(--text-muted);margin:-8px 0 12px}
-#l-resumo-dia{display:flex;flex-direction:column;gap:10px}
+.rd-lista{display:flex;flex-direction:column;gap:10px}
 .rd-dia{display:flex;gap:16px;align-items:center;background:var(--surface2);border:1px solid var(--border);border-left:5px solid var(--yellow);border-radius:14px;padding:12px 16px}
 .rd-dia.ok{border-left-color:var(--green)}
 .rd-dia.atr{border-left-color:var(--red)}
@@ -243,37 +243,44 @@ input:focus,select:focus{border-color:var(--blue)}
   </div>
 
   <!-- RECEBIMENTOS -->
-  <div class="aba" id="aba-recebimentos"><div class="two-col">
+  <div class="aba" id="aba-recebimentos">
     <div class="panel">
-      <h2>⬆️ Registrar recebimento</h2>
-      <label>Origem (de onde veio)</label><input id="inp-e-desc" type="text" placeholder="Ex: Salário, Freelance...">
-      <label>Observação (nome ou de onde vem)</label><input id="inp-e-obs" type="text" placeholder="Ex: João Silva - plano mensal">
-      <label>Valor (R$)</label><input id="inp-e-valor" type="number" step="0.01" min="0" placeholder="0,00">
-      <label>Dia do recebimento</label><input id="inp-e-dia" type="number" min="1" max="31" placeholder="Ex: 25">
-      <label class="toggle-parcelas"><input type="checkbox" id="chk-e" onchange="window._parc('e')"><div class="toggle-track"><div class="toggle-thumb"></div></div>Lançar em vários meses de uma vez</label>
-      <div class="parcelas-box" id="box-e"><div class="form-row"><div><label>Mês inicial</label><select id="ini-e" onchange="window._parc('e')"></select></div><div><label>Mês final</label><select id="fim-e" onchange="window._parc('e')"></select></div></div><div class="parcelas-preview" id="prev-e"></div></div>
-      <button class="btn btn-entrada" onclick="window._add('entrada')">+ Registrar recebimento</button>
+      <h2>🗓️ Resumo por dia (o que entra)</h2>
+      <div class="rd-info" id="rd-info-e"></div>
+      <div class="rd-lista" id="l-resumo-dia-e"><div class="loading">Carregando...</div></div>
     </div>
-    <div class="panel">
-      <h2>⬆️ Recebimentos do mês</h2>
-      <div class="search-box"><span class="search-icon">🔍</span><input id="q-entrada" placeholder="Pesquisar recebimento..." oninput="window._render('entrada')"></div>
-      <div class="list-controls">
-        <button class="filter-btn ativo" id="f-entrada-todos" onclick="window._f('entrada','todos')">Todos</button>
-        <button class="filter-btn" id="f-entrada-ok" onclick="window._f('entrada','ok')">✓ Recebidos</button>
-        <button class="filter-btn" id="f-entrada-pend" onclick="window._f('entrada','pend')">⏳ Aguardando</button>
-        <button class="filter-btn" id="f-entrada-valor" onclick="window._o('entrada')">↕ Valor</button>
+    <div class="two-col">
+      <div class="panel">
+        <h2>⬆️ Registrar recebimento</h2>
+        <label>Origem (de onde veio)</label><input id="inp-e-desc" type="text" placeholder="Ex: Salário, Freelance...">
+        <label>Observação (nome ou de onde vem)</label><input id="inp-e-obs" type="text" placeholder="Ex: João Silva - plano mensal">
+        <label>Valor (R$)</label><input id="inp-e-valor" type="number" step="0.01" min="0" placeholder="0,00">
+        <label>Dia do recebimento</label><input id="inp-e-dia" type="number" min="1" max="31" placeholder="Ex: 25">
+        <label class="toggle-parcelas"><input type="checkbox" id="chk-e" onchange="window._parc('e')"><div class="toggle-track"><div class="toggle-thumb"></div></div>Lançar em vários meses de uma vez</label>
+        <div class="parcelas-box" id="box-e"><div class="form-row"><div><label>Mês inicial</label><select id="ini-e" onchange="window._parc('e')"></select></div><div><label>Mês final</label><select id="fim-e" onchange="window._parc('e')"></select></div></div><div class="parcelas-preview" id="prev-e"></div></div>
+        <button class="btn btn-entrada" onclick="window._add('entrada')">+ Registrar recebimento</button>
       </div>
-      <div class="search-count" id="c-entrada"></div>
-      <div class="tx-list" id="l-entrada"><div class="loading">Carregando...</div></div>
+      <div class="panel">
+        <h2>⬆️ Recebimentos do mês</h2>
+        <div class="search-box"><span class="search-icon">🔍</span><input id="q-entrada" placeholder="Pesquisar recebimento..." oninput="window._render('entrada')"></div>
+        <div class="list-controls">
+          <button class="filter-btn ativo" id="f-entrada-todos" onclick="window._f('entrada','todos')">Todos</button>
+          <button class="filter-btn" id="f-entrada-ok" onclick="window._f('entrada','ok')">✓ Recebidos</button>
+          <button class="filter-btn" id="f-entrada-pend" onclick="window._f('entrada','pend')">⏳ Aguardando</button>
+          <button class="filter-btn" id="f-entrada-valor" onclick="window._o('entrada')">↕ Valor</button>
+        </div>
+        <div class="search-count" id="c-entrada"></div>
+        <div class="tx-list" id="l-entrada"><div class="loading">Carregando...</div></div>
+      </div>
     </div>
-  </div></div>
+  </div>
 
   <!-- CONTAS -->
   <div class="aba" id="aba-contas">
     <div class="panel">
       <h2>🗓️ Resumo por dia (o que vence)</h2>
       <div class="rd-info" id="rd-info"></div>
-      <div id="l-resumo-dia"><div class="loading">Carregando...</div></div>
+      <div class="rd-lista" id="l-resumo-dia"><div class="loading">Carregando...</div></div>
     </div>
     <div class="two-col">
       <div class="panel">
@@ -437,7 +444,7 @@ input:focus,select:focus{border-color:var(--blue)}
   <label>Valor (R$)</label><input id="modal-valor" type="number" step="0.01" min="0">
   <div id="modal-cat-wrap" style="display:none"><label>Categoria</label><select id="modal-cat"></select></div>
   <label id="modal-data-label">Data</label><input id="modal-data" type="date">
-  <div id="modal-prev-wrap" style="display:none"><label>📌 Pretendo pagar em (opcional)</label><input id="modal-prev" type="date"></div>
+  <div id="modal-prev-wrap" style="display:none"><label id="modal-prev-label">📌 Pretendo pagar em (opcional)</label><input id="modal-prev" type="date"></div>
   <div id="modal-pgto-wrap"><label id="modal-data-pgto-label">Data de pagamento (opcional)</label><input id="modal-data-pgto" type="date"></div>
   <div class="modal-btns">
     <button style="background:var(--surface2);color:var(--text-muted)" onclick="window._fecharModal()">Cancelar</button>
@@ -468,7 +475,7 @@ function showToast(msg) {
 }
 
 let db, currentYear, currentMonth, caixaInicial = 0;
-let transactions = [], gastos = [], allSaidas = [], invest = [], byId = {};
+let transactions = [], gastos = [], allSaidas = [], allEntradas = [], invest = [], byId = {};
 const F = { entrada: { f: 'todos', o: 'data' }, saida: { f: 'todos', o: 'data' } };
 
 const monthKey = () => `${currentYear}-${String(currentMonth).padStart(2, '0')}`;
@@ -666,27 +673,29 @@ window._togglePago = async (id, atual) => {
 };
 
 // ── Carregar dados ───────────────────────────────────────────────────────────
-// Contas com "dataPrevista" aparecem no mês dessa data (e deixam de somar no mês original).
+// Contas e recebimentos com "dataPrevista" aparecem no mês dessa data (e deixam de somar no mês original).
 async function loadData() {
   await loadCaixa();
   const c = collection(db, 'financeiro');
-  const [s1, s2, s3] = await Promise.all([
+  const [s1, s2, s3, s4] = await Promise.all([
     getDocs(query(c, where('monthKey', '==', monthKey()))),
     getDocs(query(c, where('tipo', '==', 'saida'))),
-    getDocs(query(c, where('tipo', '==', 'investimento')))
+    getDocs(query(c, where('tipo', '==', 'investimento'))),
+    getDocs(query(c, where('tipo', '==', 'entrada')))
   ]);
   const lista = s => { const l = []; s.forEach(d => l.push({ id: d.id, ...d.data() })); return l; };
   const mk = monthKey();
   const mes = lista(s1);
   allSaidas = lista(s2).sort((a, b) => a.data.localeCompare(b.data));
   invest = lista(s3).sort((a, b) => a.data.localeCompare(b.data));
-  const saidasMes = allSaidas
+  allEntradas = lista(s4).sort((a, b) => a.data.localeCompare(b.data));
+  const moveMes = l => l
     .filter(t => (t.dataPrevista || t.data).substring(0, 7) === mk)
     .map(t => t.dataPrevista ? { ...t, venceOrig: t.data, data: t.dataPrevista } : t);
-  transactions = [...mes.filter(t => t.tipo === 'entrada'), ...saidasMes].sort((a, b) => a.data.localeCompare(b.data));
+  transactions = [...moveMes(allEntradas), ...moveMes(allSaidas)].sort((a, b) => a.data.localeCompare(b.data));
   gastos = mes.filter(t => t.tipo === 'gasto').sort((a, b) => b.data.localeCompare(a.data) || (b.criadoEm || 0) - (a.criadoEm || 0));
   byId = {};
-  [...mes, ...allSaidas, ...invest].forEach(t => byId[t.id] = t);
+  [...mes, ...allSaidas, ...allEntradas, ...invest].forEach(t => byId[t.id] = t);
   renderAll();
 }
 
@@ -706,8 +715,8 @@ function linha(t) {
   const corVal = pago ? (ent || inv ? 'green' : 'red') : 'muted';
   const sinal = ent ? '+' : inv ? '' : '-';
   const pgto = t.dataPagamento ? ` · <span class="blue">pago em ${formatarData(t.dataPagamento)}</span>` : '';
-  const orig = t.venceOrig ? ` · <span class="red">venceu ${formatarData(t.venceOrig)}</span>` : '';
-  const prev = (!t.venceOrig && t.dataPrevista && !pago) ? ` · <span class="blue">📌 pagar em ${formatarData(t.dataPrevista)}</span>` : '';
+  const orig = t.venceOrig ? ` · <span class="${ent ? 'blue' : 'red'}">${ent ? 'previsto' : 'venceu'} ${formatarData(t.venceOrig)}</span>` : '';
+  const prev = (!t.venceOrig && t.dataPrevista && !pago) ? ` · <span class="blue">📌 ${ent ? 'receber' : 'pagar'} em ${formatarData(t.dataPrevista)}</span>` : '';
   return `<div class="tx-item ${cls}">
     <button class="tx-check ${pago ? 'pago' : ''}" onclick="window._togglePago('${t.id}',${pago})">${pago ? '✓' : ''}</button>
     <div class="tx-info"><div class="tx-desc">${t.desc}${obsHtml(t)}</div>
@@ -771,18 +780,21 @@ window._o = t => {
   renderLista(t);
 };
 
-// ── Resumo por dia (aba Contas) ──────────────────────────────────────────────
-function renderResumoDia() {
-  const S = transactions.filter(t => t.tipo === 'saida');
-  const el = $('l-resumo-dia');
-  if (!S.length) { el.innerHTML = '<div class="empty">Nenhuma conta neste mês.</div>'; $('rd-info').textContent = ''; return; }
+// ── Resumo por dia (abas Contas e Recebimentos) ──────────────────────────────
+function renderResumoDia(tipo) {
+  const ent = tipo === 'entrada';
+  const S = transactions.filter(t => t.tipo === tipo);
+  const el = $(ent ? 'l-resumo-dia-e' : 'l-resumo-dia'), info = $(ent ? 'rd-info-e' : 'rd-info');
+  if (!S.length) { el.innerHTML = `<div class="empty">${ent ? 'Nenhum recebimento neste mês.' : 'Nenhuma conta neste mês.'}</div>`; info.textContent = ''; return; }
   const { dataHoje, dataAmanha } = getDatasReferencia();
   const SEM = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
   const porDia = {};
   S.forEach(t => { (porDia[t.data] = porDia[t.data] || []).push(t); });
   const datas = Object.keys(porDia).sort();
   const totPend = S.filter(t => !t.pago).reduce((s, t) => s + t.valor, 0);
-  $('rd-info').textContent = `${datas.length} dia(s) com vencimento · ainda a pagar no mês: ${fmt(totPend)}`;
+  info.textContent = ent
+    ? `${datas.length} dia(s) com recebimento · ainda a receber no mês: ${fmt(totPend)}`
+    : `${datas.length} dia(s) com vencimento · ainda a pagar no mês: ${fmt(totPend)}`;
   el.innerHTML = datas.map(d => {
     const it = porDia[d];
     const pend = it.filter(t => !t.pago).reduce((s, t) => s + t.valor, 0);
@@ -791,16 +803,16 @@ function renderResumoDia() {
     const sem = SEM[new Date(+y, +m - 1, +dia).getDay()];
     const atras = pend > 0 && d < dataHoje;
     let tag = '';
-    if (pend === 0) tag = '<span class="rd-tag green">✅ tudo pago</span>';
-    else if (atras) tag = `<span class="rd-tag red">vencido há ${diasEntre(d, dataHoje)} dia(s)</span>`;
+    if (pend === 0) tag = `<span class="rd-tag green">✅ ${ent ? 'tudo recebido' : 'tudo pago'}</span>`;
+    else if (atras) tag = `<span class="rd-tag red">${ent ? 'não recebido há' : 'vencido há'} ${diasEntre(d, dataHoje)} dia(s)</span>`;
     else if (d === dataHoje) tag = '<span class="rd-tag red">HOJE</span>';
     else if (d === dataAmanha) tag = '<span class="rd-tag yellow">AMANHÃ</span>';
     const cls = (pend === 0 ? 'ok' : atras ? 'atr' : '') + (d === dataHoje ? ' hoje' : '');
-    const chips = it.map(t => `<span class="rd-chip ${t.pago ? 'pago' : ''}">${esc(t.desc)} · ${fmt(t.valor)}${t.venceOrig ? ' (venceu ' + formatarData(t.venceOrig).slice(0, 5) + ')' : ''}</span>`).join('');
+    const chips = it.map(t => `<span class="rd-chip ${t.pago ? 'pago' : ''}">${esc(t.desc)}${ent && t.obs ? ' · ' + esc(t.obs) : ''} · ${fmt(t.valor)}${t.venceOrig ? ' (' + (ent ? 'previsto ' : 'venceu ') + formatarData(t.venceOrig).slice(0, 5) + ')' : ''}</span>`).join('');
     return `<div class="rd-dia ${cls}">
       <div class="rd-data"><b>${+dia}</b><span>${sem}</span></div>
       <div class="rd-itens">${chips}</div>
-      <div class="rd-tot"><b class="${pend > 0 ? (atras ? 'red' : 'yellow') : 'green'}">${pend > 0 ? 'A pagar ' + fmt(pend) : 'Tudo pago'}</b><small>Pago ${fmt(pago)}</small>${tag}</div>
+      <div class="rd-tot"><b class="${pend > 0 ? (atras ? 'red' : 'yellow') : 'green'}">${pend > 0 ? (ent ? 'A receber ' : 'A pagar ') + fmt(pend) : (ent ? 'Tudo recebido' : 'Tudo pago')}</b><small>${ent ? 'Recebido ' : 'Pago '}${fmt(pago)}</small>${tag}</div>
     </div>`;
   }).join('');
 }
@@ -871,7 +883,7 @@ function renderCalendario() {
       const ent = t.tipo === 'entrada', pago = t.pago === true;
       const st = pago ? (ent ? 'recebido' : 'pago') : (ent ? 'aguardando' : 'pendente');
       const cor = pago ? (ent ? 'green' : 'red') : 'yellow';
-      return `<div class="ag-item"><span class="ag-nome">${ent ? '⬆' : '⬇'} ${t.desc}${obsHtml(t)}${t.venceOrig ? ' <span class="red">(venceu ' + formatarData(t.venceOrig).slice(0, 5) + ')</span>' : ''}</span><span class="ag-st ${cor}">${st}</span><span class="ag-val ${ent ? 'green' : 'red'}">${ent ? '+' : '-'}${fmt(t.valor)}</span></div>`;
+      return `<div class="ag-item"><span class="ag-nome">${ent ? '⬆' : '⬇'} ${t.desc}${obsHtml(t)}${t.venceOrig ? ' <span class="' + (ent ? 'blue' : 'red') + '">(' + (ent ? 'previsto ' : 'venceu ') + formatarData(t.venceOrig).slice(0, 5) + ')</span>' : ''}</span><span class="ag-st ${cor}">${st}</span><span class="ag-val ${ent ? 'green' : 'red'}">${ent ? '+' : '-'}${fmt(t.valor)}</span></div>`;
     }).join('');
     return `<div class="ag-dia ${cls}" onclick="window._abrirModalDia('${dia}')">
       <div class="ag-data"><div class="ag-num">${+dia}</div><div class="ag-sem">${nome}</div>${vencido ? '<div class="ag-tag red">vencido</div>' : ehHoje ? '<div class="ag-tag blue">hoje</div>' : ''}</div>
@@ -887,7 +899,7 @@ window._abrirModalDia = dia => {
     const ent = t.tipo === 'entrada', pago = t.pago === true;
     return `<div class="dia-item"><div>${ent ? '⬆️' : '⬇️'}</div>
       <div class="tx-info"><div class="tx-desc">${t.desc}${obsHtml(t)}</div>
-      <div class="tx-meta">${ent ? 'Recebimento' : 'Conta'} · ${pago ? (ent ? 'recebido' : 'pago') : (ent ? 'aguardando' : 'pendente')}${t.venceOrig ? ' · venceu ' + formatarData(t.venceOrig) : ''}</div></div>
+      <div class="tx-meta">${ent ? 'Recebimento' : 'Conta'} · ${pago ? (ent ? 'recebido' : 'pago') : (ent ? 'aguardando' : 'pendente')}${t.venceOrig ? ' · ' + (ent ? 'previsto ' : 'venceu ') + formatarData(t.venceOrig) : ''}</div></div>
       <div class="tx-value ${ent ? 'green' : (pago ? 'red' : 'muted')}">${ent ? '+' : '-'}${fmt(t.valor)}</div></div>`;
   }).join('');
   $('modal-dia-overlay').classList.remove('hidden');
@@ -1024,7 +1036,7 @@ function renderAll() {
   } else pv.style.display = 'none';
 
   renderLista('entrada'); renderLista('saida'); window._renderGastos();
-  renderResumoDia();
+  renderResumoDia('saida'); renderResumoDia('entrada');
   renderInvest(); renderParceladas(); renderAtrasadas(); renderCalendario();
   renderResumo({ E, S, rec, arec, pag, pend, gas, saldoReal, saldoPrev });
 }
@@ -1048,12 +1060,13 @@ window._abrirModal = id => {
   _editandoId = id;
   const ent = t.tipo === 'entrada', inv = t.tipo === 'investimento', gas = t.tipo === 'gasto', sai = t.tipo === 'saida';
   $('modal-titulo').textContent = ent ? '✏️ Editar recebimento' : inv ? '✏️ Editar investimento' : gas ? '✏️ Editar gasto' : '✏️ Editar conta';
-  $('modal-data-label').textContent = gas ? 'Data do gasto' : (ent || inv ? 'Data prevista' : 'Data de vencimento (original)');
+  $('modal-data-label').textContent = gas ? 'Data do gasto' : ent ? 'Data prevista (original)' : inv ? 'Data prevista' : 'Data de vencimento (original)';
   $('modal-data-pgto-label').textContent = ent ? 'Data de recebimento (opcional)' : inv ? 'Data em que investiu (opcional)' : 'Data de pagamento (opcional)';
+  $('modal-prev-label').textContent = ent ? '📌 Pretendo receber em (opcional)' : '📌 Pretendo pagar em (opcional)';
   $('modal-cat-wrap').style.display = gas ? 'block' : 'none';
   $('modal-pgto-wrap').style.display = gas ? 'none' : 'block';
   $('modal-obs-wrap').style.display = gas ? 'none' : 'block';
-  $('modal-prev-wrap').style.display = sai ? 'block' : 'none';
+  $('modal-prev-wrap').style.display = (sai || ent) ? 'block' : 'none';
   if (gas) $('modal-cat').value = t.cat || 'Outros';
   $('modal-desc').value = t.desc; $('modal-obs').value = t.obs || ''; $('modal-valor').value = t.valor;
   $('modal-data').value = t.data; $('modal-data-pgto').value = t.dataPagamento || '';
@@ -1071,7 +1084,7 @@ window._salvarEdicao = async () => {
   const upd = gas
     ? { desc, valor, data, cat: $('modal-cat').value, monthKey: data.substring(0, 7) }
     : { desc, obs: $('modal-obs').value.trim(), valor, data, monthKey: data.substring(0, 7), dataPagamento: $('modal-data-pgto').value || null };
-  if (t && t.tipo === 'saida') upd.dataPrevista = $('modal-prev').value || null;
+  if (t && (t.tipo === 'saida' || t.tipo === 'entrada')) upd.dataPrevista = $('modal-prev').value || null;
   try {
     await updateDoc(doc(db, 'financeiro', _editandoId), upd);
     showToast('✅ Atualizado!'); window._fecharModal(); loadData();
