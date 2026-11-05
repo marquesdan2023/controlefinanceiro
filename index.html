@@ -667,13 +667,17 @@ window._del = async id => {
   try { await deleteDoc(doc(db, 'financeiro', id)); showToast('🗑️ Removido'); loadData(); }
   catch { showToast('❌ Erro ao remover'); }
 };
+// Ao marcar como pago/recebido, grava a data de hoje; ao desmarcar, apaga.
 window._togglePago = async (id, atual) => {
-  try { await updateDoc(doc(db, 'financeiro', id), { pago: !atual }); loadData(); }
-  catch { showToast('❌ Erro ao atualizar'); }
+  try {
+    const hoje = getDatasReferencia().dataHoje;
+    await updateDoc(doc(db, 'financeiro', id), { pago: !atual, dataPagamento: !atual ? hoje : null });
+    loadData();
+  } catch { showToast('❌ Erro ao atualizar'); }
 };
 
 // ── Carregar dados ───────────────────────────────────────────────────────────
-// Contas e recebimentos com "dataPrevista" aparecem no mês dessa data (e deixam de somar no mês original).
+// Dia efetivo: se já foi pago, vale a data do pagamento; senão a data prevista; senão o vencimento.
 async function loadData() {
   await loadCaixa();
   const c = collection(db, 'financeiro');
@@ -689,9 +693,10 @@ async function loadData() {
   allSaidas = lista(s2).sort((a, b) => a.data.localeCompare(b.data));
   invest = lista(s3).sort((a, b) => a.data.localeCompare(b.data));
   allEntradas = lista(s4).sort((a, b) => a.data.localeCompare(b.data));
+  const diaEf = t => (t.pago && t.dataPagamento) ? t.dataPagamento : (t.dataPrevista || t.data);
   const moveMes = l => l
-    .filter(t => (t.dataPrevista || t.data).substring(0, 7) === mk)
-    .map(t => t.dataPrevista ? { ...t, venceOrig: t.data, data: t.dataPrevista } : t);
+    .filter(t => diaEf(t).substring(0, 7) === mk)
+    .map(t => { const d = diaEf(t); return d !== t.data ? { ...t, venceOrig: t.data, data: d } : t; });
   transactions = [...moveMes(allEntradas), ...moveMes(allSaidas)].sort((a, b) => a.data.localeCompare(b.data));
   gastos = mes.filter(t => t.tipo === 'gasto').sort((a, b) => b.data.localeCompare(a.data) || (b.criadoEm || 0) - (a.criadoEm || 0));
   byId = {};
@@ -714,7 +719,7 @@ function linha(t) {
   const corSt = pago ? 'green' : 'yellow';
   const corVal = pago ? (ent || inv ? 'green' : 'red') : 'muted';
   const sinal = ent ? '+' : inv ? '' : '-';
-  const pgto = t.dataPagamento ? ` · <span class="blue">pago em ${formatarData(t.dataPagamento)}</span>` : '';
+  const pgto = t.dataPagamento ? ` · <span class="blue">${ent ? 'recebido' : 'pago'} em ${formatarData(t.dataPagamento)}</span>` : '';
   const orig = t.venceOrig ? ` · <span class="${ent ? 'blue' : 'red'}">${ent ? 'previsto' : 'venceu'} ${formatarData(t.venceOrig)}</span>` : '';
   const prev = (!t.venceOrig && t.dataPrevista && !pago) ? ` · <span class="blue">📌 ${ent ? 'receber' : 'pagar'} em ${formatarData(t.dataPrevista)}</span>` : '';
   return `<div class="tx-item ${cls}">
