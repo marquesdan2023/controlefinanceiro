@@ -164,6 +164,24 @@ input:focus,select:focus{border-color:var(--blue)}
 .res-vazio{color:var(--text-muted);font-size:.9rem;padding:8px 0}
 .res-prog{background:var(--surface2);border-radius:99px;height:8px;overflow:hidden;margin:6px 0 2px}
 .res-prog div{height:100%;border-radius:99px;background:var(--green)}
+/* Resumo por dia (aba Contas) */
+.rd-info{font-size:.85rem;color:var(--text-muted);margin:-8px 0 12px}
+#l-resumo-dia{display:flex;flex-direction:column;gap:10px}
+.rd-dia{display:flex;gap:16px;align-items:center;background:var(--surface2);border:1px solid var(--border);border-left:5px solid var(--yellow);border-radius:14px;padding:12px 16px}
+.rd-dia.ok{border-left-color:var(--green)}
+.rd-dia.atr{border-left-color:var(--red)}
+.rd-dia.hoje{box-shadow:0 0 0 2px var(--blue)}
+.rd-data{min-width:58px;text-align:center}
+.rd-data b{display:block;font-family:'Orbitron',sans-serif;font-size:1.5rem;font-weight:800;line-height:1}
+.rd-data span{font-size:.82rem;color:var(--text-muted)}
+.rd-itens{flex:1;display:flex;flex-wrap:wrap;gap:6px;min-width:0}
+.rd-chip{background:var(--surface);border-radius:8px;padding:4px 10px;font-size:.88rem;font-weight:600}
+.rd-chip.pago{text-decoration:line-through;opacity:.55}
+.rd-tot{text-align:right;min-width:130px}
+.rd-tot b{display:block;font-family:'Orbitron',sans-serif;font-size:.9rem}
+.rd-tot small{display:block;font-size:.78rem;color:var(--text-muted);margin-top:2px}
+.rd-tag{display:inline-block;font-size:.72rem;font-weight:700;text-transform:uppercase;margin-top:4px}
+@media(max-width:700px){.rd-dia{flex-wrap:wrap}.rd-tot{text-align:left;min-width:100%}}
 </style>
 </head>
 <body>
@@ -251,29 +269,36 @@ input:focus,select:focus{border-color:var(--blue)}
   </div></div>
 
   <!-- CONTAS -->
-  <div class="aba" id="aba-contas"><div class="two-col">
-    <div class="panel">
-      <h2>⬇️ Registrar conta</h2>
-      <label>Nome da conta</label><input id="inp-s-desc" type="text" placeholder="Ex: Aluguel, Luz, Internet...">
-      <label>Valor (R$)</label><input id="inp-s-valor" type="number" step="0.01" min="0" placeholder="0,00">
-      <label>Dia de vencimento</label><input id="inp-s-dia" type="number" min="1" max="31" placeholder="Ex: 10">
-      <label class="toggle-parcelas"><input type="checkbox" id="chk-s" onchange="window._parc('s')"><div class="toggle-track"><div class="toggle-thumb"></div></div>Lançar em parcelas (vários meses de uma vez)</label>
-      <div class="parcelas-box" id="box-s"><div class="form-row"><div><label>Mês inicial</label><select id="ini-s" onchange="window._parc('s')"></select></div><div><label>Mês final</label><select id="fim-s" onchange="window._parc('s')"></select></div></div><div class="parcelas-preview" id="prev-s"></div></div>
-      <button class="btn btn-saida" onclick="window._add('saida')">− Adicionar conta</button>
-    </div>
-    <div class="panel">
-      <h2>⬇️ Contas do mês</h2>
-      <div class="search-box"><span class="search-icon">🔍</span><input id="q-saida" placeholder="Pesquisar conta..." oninput="window._render('saida')"></div>
-      <div class="list-controls">
-        <button class="filter-btn ativo" id="f-saida-todos" onclick="window._f('saida','todos')">Todos</button>
-        <button class="filter-btn" id="f-saida-ok" onclick="window._f('saida','ok')">✓ Pagas</button>
-        <button class="filter-btn" id="f-saida-pend" onclick="window._f('saida','pend')">⏳ Pendentes</button>
-        <button class="filter-btn" id="f-saida-valor" onclick="window._o('saida')">↕ Valor</button>
+  <div class="aba" id="aba-contas">
+    <div class="two-col">
+      <div class="panel">
+        <h2>⬇️ Registrar conta</h2>
+        <label>Nome da conta</label><input id="inp-s-desc" type="text" placeholder="Ex: Aluguel, Luz, Internet...">
+        <label>Valor (R$)</label><input id="inp-s-valor" type="number" step="0.01" min="0" placeholder="0,00">
+        <label>Dia de vencimento</label><input id="inp-s-dia" type="number" min="1" max="31" placeholder="Ex: 10">
+        <label class="toggle-parcelas"><input type="checkbox" id="chk-s" onchange="window._parc('s')"><div class="toggle-track"><div class="toggle-thumb"></div></div>Lançar em parcelas (vários meses de uma vez)</label>
+        <div class="parcelas-box" id="box-s"><div class="form-row"><div><label>Mês inicial</label><select id="ini-s" onchange="window._parc('s')"></select></div><div><label>Mês final</label><select id="fim-s" onchange="window._parc('s')"></select></div></div><div class="parcelas-preview" id="prev-s"></div></div>
+        <button class="btn btn-saida" onclick="window._add('saida')">− Adicionar conta</button>
       </div>
-      <div class="search-count" id="c-saida"></div>
-      <div class="tx-list" id="l-saida"><div class="loading">Carregando...</div></div>
+      <div class="panel">
+        <h2>⬇️ Contas do mês</h2>
+        <div class="search-box"><span class="search-icon">🔍</span><input id="q-saida" placeholder="Pesquisar conta..." oninput="window._render('saida')"></div>
+        <div class="list-controls">
+          <button class="filter-btn ativo" id="f-saida-todos" onclick="window._f('saida','todos')">Todos</button>
+          <button class="filter-btn" id="f-saida-ok" onclick="window._f('saida','ok')">✓ Pagas</button>
+          <button class="filter-btn" id="f-saida-pend" onclick="window._f('saida','pend')">⏳ Pendentes</button>
+          <button class="filter-btn" id="f-saida-valor" onclick="window._o('saida')">↕ Valor</button>
+        </div>
+        <div class="search-count" id="c-saida"></div>
+        <div class="tx-list" id="l-saida"><div class="loading">Carregando...</div></div>
+      </div>
     </div>
-  </div></div>
+    <div class="panel" style="margin-top:20px">
+      <h2>🗓️ Resumo por dia (o que vence)</h2>
+      <div class="rd-info" id="rd-info"></div>
+      <div id="l-resumo-dia"><div class="loading">Carregando...</div></div>
+    </div>
+  </div>
 
   <!-- GASTOS -->
   <div class="aba" id="aba-gastos"><div class="two-col">
@@ -738,6 +763,40 @@ window._o = t => {
   renderLista(t);
 };
 
+// ── Resumo por dia (aba Contas) ──────────────────────────────────────────────
+function renderResumoDia() {
+  const S = transactions.filter(t => t.tipo === 'saida');
+  const el = $('l-resumo-dia');
+  if (!S.length) { el.innerHTML = '<div class="empty">Nenhuma conta neste mês.</div>'; $('rd-info').textContent = ''; return; }
+  const { dataHoje, dataAmanha } = getDatasReferencia();
+  const SEM = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+  const porDia = {};
+  S.forEach(t => { (porDia[t.data] = porDia[t.data] || []).push(t); });
+  const datas = Object.keys(porDia).sort();
+  const totPend = S.filter(t => !t.pago).reduce((s, t) => s + t.valor, 0);
+  $('rd-info').textContent = `${datas.length} dia(s) com vencimento · ainda a pagar no mês: ${fmt(totPend)}`;
+  el.innerHTML = datas.map(d => {
+    const it = porDia[d];
+    const pend = it.filter(t => !t.pago).reduce((s, t) => s + t.valor, 0);
+    const pago = it.filter(t => t.pago).reduce((s, t) => s + t.valor, 0);
+    const [y, m, dia] = d.split('-');
+    const sem = SEM[new Date(+y, +m - 1, +dia).getDay()];
+    const atras = pend > 0 && d < dataHoje;
+    let tag = '';
+    if (pend === 0) tag = '<span class="rd-tag green">✅ tudo pago</span>';
+    else if (atras) tag = `<span class="rd-tag red">vencido há ${diasEntre(d, dataHoje)} dia(s)</span>`;
+    else if (d === dataHoje) tag = '<span class="rd-tag red">HOJE</span>';
+    else if (d === dataAmanha) tag = '<span class="rd-tag yellow">AMANHÃ</span>';
+    const cls = (pend === 0 ? 'ok' : atras ? 'atr' : '') + (d === dataHoje ? ' hoje' : '');
+    const chips = it.map(t => `<span class="rd-chip ${t.pago ? 'pago' : ''}">${esc(t.desc)} · ${fmt(t.valor)}</span>`).join('');
+    return `<div class="rd-dia ${cls}">
+      <div class="rd-data"><b>${+dia}</b><span>${sem}</span></div>
+      <div class="rd-itens">${chips}</div>
+      <div class="rd-tot"><b class="${pend > 0 ? (atras ? 'red' : 'yellow') : 'green'}">${pend > 0 ? 'A pagar ' + fmt(pend) : 'Tudo pago'}</b><small>Pago ${fmt(pago)}</small>${tag}</div>
+    </div>`;
+  }).join('');
+}
+
 // ── Investimentos ────────────────────────────────────────────────────────────
 function renderInvest() {
   const plan = invest.filter(i => !i.pago).reduce((s, i) => s + i.valor, 0);
@@ -837,7 +896,6 @@ function renderResumo(c) {
   const { E, S, rec, arec, pag, pend, gas, saldoReal, saldoPrev } = c;
   const { dataHoje, dataAmanha } = getDatasReferencia();
 
-  // Recebimentos
   const recPagos = E.filter(t => t.pago).length;
   const proxRec = E.filter(t => !t.pago).sort((a, b) => a.data.localeCompare(b.data))[0];
   $('rs-rec').innerHTML = E.length
@@ -846,7 +904,6 @@ function renderResumo(c) {
       + (proxRec ? rowNome('Próximo a cair', `${esc(proxRec.desc)}${proxRec.obs ? ' · ' + esc(proxRec.obs) : ''} (${formatarData(proxRec.data)})`) : '')
     : vazio('Nenhum recebimento neste mês.');
 
-  // Contas
   const pagasC = S.filter(t => t.pago).length;
   const pct = S.length ? Math.round(pagasC / S.length * 100) : 0;
   const proxCon = S.filter(t => !t.pago && t.data >= dataHoje).sort((a, b) => a.data.localeCompare(b.data))[0];
@@ -857,7 +914,6 @@ function renderResumo(c) {
       + (proxCon ? rowNome('Próxima a vencer', `${esc(proxCon.desc)} (${formatarData(proxCon.data)})`) : '')
     : vazio('Nenhuma conta neste mês.');
 
-  // Gastos
   const porCat = {};
   gastos.forEach(t => { const k = t.cat || 'Outros'; porCat[k] = (porCat[k] || 0) + t.valor; });
   const topCat = Object.entries(porCat).sort((a, b) => b[1] - a[1])[0];
@@ -866,7 +922,6 @@ function renderResumo(c) {
       + (topCat ? row('Maior categoria', `${esc(topCat[0])} · ${fmt(topCat[1])}`) : '')
     : vazio('Nenhum gasto neste mês.');
 
-  // Investimentos
   const plan = invest.filter(i => !i.pago).reduce((s, i) => s + i.valor, 0);
   const real = invest.filter(i => i.pago).reduce((s, i) => s + i.valor, 0);
   const proxInv = invest.filter(i => !i.pago).sort((a, b) => a.data.localeCompare(b.data))[0];
@@ -875,7 +930,6 @@ function renderResumo(c) {
       + (proxInv ? rowNome('Próximo', `${esc(proxInv.desc)} · ${fmt(proxInv.valor)} (${formatarData(proxInv.data)})`) : '')
     : vazio('Nenhum investimento planejado.');
 
-  // Contas parceladas
   const ativos = gruposParcelados().filter(x => x.pagas < x.itens.length);
   const parcelasRest = ativos.reduce((s, x) => s + (x.itens.length - x.pagas), 0);
   const valorRest = ativos.reduce((s, x) => s + x.resta, 0);
@@ -884,7 +938,6 @@ function renderResumo(c) {
       + row('Falta pagar', fmt(valorRest), 'yellow')
     : vazio('Nenhuma conta parcelada em andamento.');
 
-  // Contas atrasadas
   const atr = allSaidas.filter(t => !t.pago && t.data < dataHoje);
   const totAtr = atr.reduce((s, t) => s + t.valor, 0);
   $('rs-atr').innerHTML = atr.length
@@ -892,13 +945,11 @@ function renderResumo(c) {
       + rowNome('Mais antiga', `${esc(atr[0].desc)} · há ${diasEntre(atr[0].data, dataHoje)} dia(s)`)
     : '<div class="res-vazio">🎉 Nenhuma conta atrasada!</div>';
 
-  // Projeção
   $('rs-pro').innerHTML =
     row('Saldo real', fmtS(saldoReal), saldoReal >= 0 ? 'purple' : 'red')
     + row('+ A receber', fmt(arec), 'yellow') + row('− A pagar', fmt(pend), 'red')
     + row('Saldo previsto', fmtS(saldoPrev), saldoPrev >= 0 ? 'blue' : 'red');
 
-  // Próximos vencimentos
   const prox = S.filter(t => !t.pago && t.data >= dataHoje).sort((a, b) => a.data.localeCompare(b.data));
   const nHoje = prox.filter(t => t.data === dataHoje).length, nAman = prox.filter(t => t.data === dataAmanha).length;
   $('rs-ven').innerHTML = prox.length
@@ -965,6 +1016,7 @@ function renderAll() {
   } else pv.style.display = 'none';
 
   renderLista('entrada'); renderLista('saida'); window._renderGastos();
+  renderResumoDia();
   renderInvest(); renderParceladas(); renderAtrasadas(); renderCalendario();
   renderResumo({ E, S, rec, arec, pag, pend, gas, saldoReal, saldoPrev });
 }
